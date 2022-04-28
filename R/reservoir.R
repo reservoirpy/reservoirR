@@ -74,7 +74,7 @@ predict_seq(node,X,
   pred <- node$run(X, from_state = formState, 
            state_ful = stateFul, 
            reset=reset)
-  print(pred)
+  return(pred)
 }
 
 
