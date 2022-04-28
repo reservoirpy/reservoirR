@@ -1,9 +1,4 @@
 test_that("reservoir", {
-  # use_virtualenv("reservoirpy-r")
-  # # virtualenv_install(envname = "reservoirpy-r", packages = "../reservoirpy", pip_options = "-e")
-  # 
-  # reservoirpy = import("reservoirpy")
-  # np = import("numpy")
   timesteps <- 2500
   tau <- 17
   X = reservoirpy$datasets$mackey_glass(as.integer(timesteps), tau=as.integer(tau))

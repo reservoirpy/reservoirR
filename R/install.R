@@ -1,6 +1,6 @@
 #'Install reservoirpy.
 #' 
-#' @param envname (str) name of environment. Default is R-reticulate
+#' @param envname \code{str} name of environment. Default is R-reticulate
 #' @param method \code{str} type of environment type \code{(virtualenv, conda)}. 
 #' Default is auto \code{(virtualenv is not available on Windows)}
 #' 
