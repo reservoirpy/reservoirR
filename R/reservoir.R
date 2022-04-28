@@ -103,7 +103,7 @@ fit(node,X,Y,warmup = 0){
   stopifnot(!is.null(node))
   stopifnot(is.array(X) & is.array(Y))
   
-  wramup <- as.integer(wramup)
+  warmup <- as.integer(warmup)
   fit <- node$fit(X, Y = Y,warmup = warmup)
   return(fit)
 }
