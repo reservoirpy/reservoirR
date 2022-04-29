@@ -11,7 +11,6 @@ Description: ReservoirR is a simple user-friendly library based on Python scient
              Computing (RC) architectures with a particular focus on Echo State Networks (ESN). 
              Advanced features of ReservoirR allow to improve computation time efficiency on 
              a simple laptop compared to basic Python implementation, with datasets of any size.
-             
              Some of its features are: offline and online training, parallel implementation, 
              sparse matrix computation, fast spectral initialization, advanced learning 
              rules (e.g. Intrinsic Plasticity) etc. It also makes possible to easily create 
