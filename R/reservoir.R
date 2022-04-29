@@ -55,17 +55,17 @@ createNode <- function(nodeType=c("Ridge"),
 #'@param formState array of shape \code{(1, output_dim)}, optional 
 #'Node state value to use at begining of computation.
 #'
-#'@param stateFul \code{bool}, default to \code{True} 
+#'@param stateFul \code{bool}, default to \code{TRUE} 
 #'If True, Node state will be updated by this operation.
 #'
-#'@param reset \code{bool}, default to \code{False}
+#'@param reset \code{bool}, default to \code{FALSE}
 #'If True, Node state will be reset to zero before this operation.
 
 
-predict_seq(node,X,
-            formState = NULL,
-            stateFul = TRUE,
-            reset = FALSE){
+predict_seq <- function(node,X,
+                        formState = NULL,
+                        stateFul = TRUE,
+                        reset = FALSE){
   
   stopifnot(!is.null(node))
   stopifnot(is.list(X)| is.array(X))
@@ -98,7 +98,7 @@ predict_seq(node,X,
 #'discard at the begining of each timeseries before training.
 
 
-fit(node,X,Y,warmup = 0){
+fit <- function(node,X,Y,warmup = 0){
   
   stopifnot(!is.null(node))
   stopifnot(is.array(X) & is.array(Y))
@@ -107,28 +107,3 @@ fit(node,X,Y,warmup = 0){
   fit <- node$fit(X, Y = Y,warmup = warmup)
   return(fit)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
