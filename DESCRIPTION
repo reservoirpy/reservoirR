@@ -3,8 +3,8 @@ Type: Package
 Title: Simple and flexible code for Reservoir Computing architectures like Echo State Networks (ESN).
 Version: 0.1.1
 Date: 2022-04-28
-Authors@R: c(person("", "", role = c("aut", "cre"), email = ""))
-Maintainer:  <>
+Authors@R: c(person("John", "Doe", role = c("aut", "cre"), email = "john.doe@smith.fr"))
+Maintainer:  <john.doe@smith.fr>
 SystemRequirements: Python (>= 3.7)
 Description: ReservoirR is a simple user-friendly library based on Python scientific
              modules. It provides a flexible interface to implement efficient Reservoir 
@@ -19,8 +19,6 @@ Description: ReservoirR is a simple user-friendly library based on Python scient
              explore hyperparameters with the help of the hyperopt library. Finally, it includes 
              several tutorials exploring exotic architectures and examples of scientific papers 
              reproduction.
-
-
 Config/reticulate:
   list(
     packages = list(
