@@ -14,7 +14,8 @@
 #'
 #'@param inputBias bool, default to \code{TRUE}. If TRUE, then a bias parameter 
 #'will be learned along with output weights.
-
+#'
+#'@export
 createNode <- function(nodeType = c("Ridge"), 
                        otputDim = NULL, 
                        inputDim = NULL, 
@@ -60,8 +61,8 @@ createNode <- function(nodeType = c("Ridge"),
 #'
 #'@param reset \code{bool}, default to \code{FALSE}
 #'If True, Node state will be reset to zero before this operation.
-
-
+#'
+#'@export
 predict_seq <- function(node,X,
                         formState = NULL,
                         stateFul = TRUE,
@@ -96,8 +97,8 @@ predict_seq <- function(node,X,
 #'@param warmup : \code{int}, default to 0 
 #'Number of timesteps to consider as warmup and 
 #'discard at the begining of each timeseries before training.
-
-
+#'
+#'@export
 fit <- function(node, X, Y, warmup = 0){
   
   stopifnot(!is.null(node))

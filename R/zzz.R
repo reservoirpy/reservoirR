@@ -15,11 +15,6 @@ reservoirpy <- NULL
 .onLoad <- function(libname, pkgname) {
   reservoirpy <<- reticulate::import("reservoirpy", convert = FALSE,
                                      delay_load=list(on_error = err_reservoirpy))
-}
-
-#' @import reticulate
-np <- NULL
-.onLoad <- function(libname, pkgname) {
   np <<- reticulate::import("numpy", convert = FALSE,
                                      delay_load=list(on_error = err_np))
 }
