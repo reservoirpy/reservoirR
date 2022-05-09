@@ -1,6 +1,6 @@
 #' Function to create some node
 #'
-#'@param nodeType 
+#'@param nodeType Type of node. Default is \code{"Ridge"}.
 #'
 #'@param otputDim Output dimension of the Node. Dimension of its state.
 #'
@@ -10,10 +10,10 @@
 #'
 #'@param dtype Numerical type for node parameters
 #'
-#'@param ridge float, default to 0.0 L2 regularization parameter. 
+#'@param ridge float, default to \code{0.0}. L2 regularization parameter. 
 #'
-#'@param inputBias bool, default to True If True, then a bias parameter will 
-#'be learned along with output weights.
+#'@param inputBias bool, default to \code{TRUE}. If TRUE, then a bias parameter 
+#'will be learned along with output weights.
 
 createNode <- function(nodeType = c("Ridge"), 
                        otputDim = NULL, 
@@ -43,11 +43,11 @@ createNode <- function(nodeType = c("Ridge"),
 
 
 
-#' Run the Node forward function on a sequence of data.
-#' Can update the state of the
-#' Node several times
+#' Run the node-forward function on a sequence of data
+#' 
+#'@details Can update the state of the node several times
 #'
-#'@param node 
+#'@param node node
 #'
 #'@param X array-like of shape \code{([n_inputs], timesteps, input_dim)}
 #'A sequence of data of shape (timesteps, features).
@@ -78,9 +78,9 @@ predict_seq <- function(node,X,
 }
 
 
-#' Offline fitting method of a Node.
+#' Offline fitting method of a Node
 #'
-#'@param node 
+#'@param node node
 #'
 #'@param X \code{array-like} of shape \code{[n_inputs], [series], timesteps, input_dim)}, optional
 #'Input sequences dataset. If None, the method will try to fit

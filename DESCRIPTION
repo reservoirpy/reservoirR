@@ -29,7 +29,6 @@ License: GPL (>= 3)
 Repository: CRAN
 URL: 
 Depends: R (>= 3.6)
-LazyData: true
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 Imports:

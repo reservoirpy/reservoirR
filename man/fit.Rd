@@ -2,12 +2,12 @@
 % Please edit documentation in R/reservoir.R
 \name{fit}
 \alias{fit}
-\title{Offline fitting method of a Node.}
+\title{Offline fitting method of a Node}
 \usage{
 fit(node, X, Y, warmup = 0)
 }
 \arguments{
-\item{node}{}
+\item{node}{node}
 
 \item{X}{\code{array-like} of shape \code{[n_inputs], [series], timesteps, input_dim)}, optional
 Input sequences dataset. If None, the method will try to fit
@@ -25,5 +25,5 @@ Number of timesteps to consider as warmup and
 discard at the begining of each timeseries before training.}
 }
 \description{
-Offline fitting method of a Node.
+Offline fitting method of a Node
 }

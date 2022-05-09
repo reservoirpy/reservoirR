@@ -2,14 +2,12 @@
 % Please edit documentation in R/reservoir.R
 \name{predict_seq}
 \alias{predict_seq}
-\title{Run the Node forward function on a sequence of data.
-Can update the state of the
-Node several times}
+\title{Run the node-forward function on a sequence of data}
 \usage{
 predict_seq(node, X, formState = NULL, stateFul = TRUE, reset = FALSE)
 }
 \arguments{
-\item{node}{}
+\item{node}{node}
 
 \item{X}{array-like of shape \code{([n_inputs], timesteps, input_dim)}
 A sequence of data of shape (timesteps, features).}
@@ -24,7 +22,8 @@ If True, Node state will be updated by this operation.}
 If True, Node state will be reset to zero before this operation.}
 }
 \description{
-Run the Node forward function on a sequence of data.
-Can update the state of the
-Node several times
+Run the node-forward function on a sequence of data
+}
+\details{
+Can update the state of the node several times
 }

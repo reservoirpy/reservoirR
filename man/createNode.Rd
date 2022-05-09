@@ -15,7 +15,7 @@ createNode(
 )
 }
 \arguments{
-\item{nodeType}{}
+\item{nodeType}{Type of node. Default is \code{"Ridge"}.}
 
 \item{otputDim}{Output dimension of the Node. Dimension of its state.}
 
@@ -23,10 +23,10 @@ createNode(
 
 \item{name}{Name of the Node. It must be a unique identifier.}
 
-\item{ridge}{float, default to 0.0 L2 regularization parameter.}
+\item{ridge}{float, default to \code{0.0}. L2 regularization parameter.}
 
-\item{inputBias}{bool, default to True If True, then a bias parameter will 
-be learned along with output weights.}
+\item{inputBias}{bool, default to \code{TRUE}. If TRUE, then a bias parameter 
+will be learned along with output weights.}
 
 \item{dtype}{Numerical type for node parameters}
 }
