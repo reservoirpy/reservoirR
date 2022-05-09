@@ -15,13 +15,13 @@
 #'@param inputBias bool, default to True If True, then a bias parameter will 
 #'be learned along with output weights.
 
-createNode <- function(nodeType=c("Ridge"), 
-                       otputDim=NULL, 
-                       inputDim=NULL, 
-                       name=NULL,
-                       ridge=0.0,
-                       inputBias=TRUE,
-                       dtype="float64") {
+createNode <- function(nodeType = c("Ridge"), 
+                       otputDim = NULL, 
+                       inputDim = NULL, 
+                       name = NULL,
+                       ridge = 0.0,
+                       inputBias = TRUE,
+                       dtype = "float64") {
   stopifnot(!is.null(nodeType))
   
   if(nodeType == "Ridge"){
@@ -87,7 +87,7 @@ predict_seq <- function(node,X,
 #'the parameters of the Node using the precomputed values returned
 #'by previous call of :py:meth:\code{partial_fit}.
 #'
-#'@paramm Y array-like of shape \code{([series], timesteps, output_dim)}, optional
+#'@param Y array-like of shape \code{([series], timesteps, output_dim)}, optional
 #'Teacher signals dataset. If None, the method will try to fit
 #'the parameters of the Node using the precomputed values returned
 #'by previous call of :py:meth: \code{partial_fit}, or to fit the Node in
@@ -98,12 +98,12 @@ predict_seq <- function(node,X,
 #'discard at the begining of each timeseries before training.
 
 
-fit <- function(node,X,Y,warmup = 0){
+fit <- function(node, X, Y, warmup = 0){
   
   stopifnot(!is.null(node))
   stopifnot(is.array(X) & is.array(Y))
   
   warmup <- as.integer(warmup)
-  fit <- node$fit(X, Y = Y,warmup = warmup)
+  fit <- node$fit(X, Y = Y, warmup = warmup)
   return(fit)
 }

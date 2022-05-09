@@ -7,6 +7,6 @@ err_reservoirpy <- function(e) {
 #' @import reticulate
 reservoirpy <- NULL
 .onLoad <- function(libname, pkgname) {
-  reservoirpy <<- reticulate::import("reservoirpy",convert=FALSE,
-                                     delay_load=list(on_error=err_reservoirpy))
+  reservoirpy <<- reticulate::import("reservoirpy", convert = FALSE,
+                                     delay_load=list(on_error = err_reservoirpy))
 }
