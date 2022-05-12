@@ -1,3 +1,3 @@
 library(testthat)
 
-test_check("reservoir")
+test_check("Reservoir")
