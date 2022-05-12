@@ -43,4 +43,15 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+          
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 3.8
+          activate-environment: r-reticulate
+          
       - uses: r-lib/actions/check-r-package@v1
