@@ -4,7 +4,7 @@
 \alias{install_reservoirpy}
 \title{Install reservoirpy}
 \usage{
-install_reservoirpy(envname = "R-reticulate", method = "auto")
+install_reservoirpy(envname = "r-reticulate", method = "auto")
 }
 \arguments{
 \item{envname}{\code{str} name of environment. Default is R-reticulate}

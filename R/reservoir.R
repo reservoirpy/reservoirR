@@ -6,10 +6,10 @@
 #'Number of reservoir units. If None, the number of units will be infered from
 #'the \code{W} matrix shape.
 #'
-#'@paramlr (float) default to 1.0
+#'@param lr (float) default to 1.0
 #'Neurons leak rate. Must be in :math:\code{[0, 1]}.
 #'
-#'@paramsr (float) optional
+#'@param sr (float) optional
 #'Spectral radius of recurrent weight matrix.
 #'
 #'@param otputDim Output dimension of the Node. Dimension of its state.
