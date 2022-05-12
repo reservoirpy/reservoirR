@@ -1,0 +1,109 @@
+---
+title: "The basics first, you should learn"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The basics first, you should learn}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  engine.path = '~/.virtualenvs/test/bin/python'
+)
+```
+
+```{python}
+import sys
+print(sys.version)
+```
+
+```{r}
+reservoirpy <- reticulate::import("reservoirpy")
+```
+
+
+```{r setup}
+library(Reservoir)
+```
+
+# Data
+
+First let's generate awesome data
+
+```{r}
+n <- 10^2
+awesome_data <- data.frame(t = 1:n,
+                           x1 = rbinom(n = n, size = 1, prob = .5))
+awesome_data$x2 <- sin(awesome_data$t/10)*2
+awesome_data$y <- awesome_data$x2^2
+```
+
+```{r}
+plot(awesome_data$t, awesome_data$y, type = "l")
+```
+
+# Echo state network setup
+
+First we will define a reservoir network :
+
+```{r}
+reservoir <- Reservoir::node_Reservoir(units = as.integer(100))
+```
+
+Then the readout set as a Ridge function :
+
+```{r}
+readout <- Reservoir::node_Ridge(ridge = 0.01)
+```
+
+And we connect them :
+
+```{r}
+model <- Reservoir::link_nodes(reservoir, readout)
+```
+
+# Train the model and predict
+
+Let's try to predict 7 time points ahead then :
+
+```{r}
+# train set
+yTrain <- awesome_data$y[8:50]
+xTrain <- awesome_data[1:43, c("x1", "x2")]
+# test set
+xTest <- awesome_data[44:(n-7), c("x1", "x2")]
+yTest <- awesome_data$y[51:n]
+```
+
+Before to fit the model we have to convert them to array :
+
+```{r}
+lsdf <- lapply(list(yTrain = yTrain,
+            xTrain = xTrain,
+            xTest = xTest,
+            yTest = yTest),
+       function(x) as.array(as.matrix(x)))
+```
+
+And now let's fit the model
+
+```{r}
+fit <- Reservoir::fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain)
+```
+
+And predict
+
+```{r}
+vecPredictions = Reservoir::predict_seq(node = fit, X = lsdf$xTest)
+```
+
+We can compare the prediction and the truth :
+
+```{r}
+plot(awesome_data$t[51:n], yTest, type = "l")
+lines(awesome_data$t[51:n], vecPredictions, col = "red")
+```
+
