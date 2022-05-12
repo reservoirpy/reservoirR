@@ -26,7 +26,7 @@ test_that("reservoir", {
   Ytrain <- as.matrix(X[10:2010])
 
   Xtrain = reticulate::array_reshape(Xtrain, c(2001, 1))
-  Ytrain = reticulate::array_reshape(Xtrain, c(2001, 1))
+  Ytrain = reticulate::array_reshape(Ytrain, c(2001, 1))
   
   model = model$fit(X=Xtrain, Y=Ytrain)
   class(model)
