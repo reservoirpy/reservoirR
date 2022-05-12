@@ -6,8 +6,9 @@
 #'
 #' @export
 #' @examples
-#' reservoirpy <- reticulate::import("reservoirpy")
+#' \dontrun{
 #' node_Ridge(ridge = 0.5)
+#' }
 node_Ridge <- function(ridge = 0.0,
                        input_bias = TRUE,
                        ...) {

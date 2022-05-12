@@ -17,6 +17,7 @@ node_Ridge(ridge = 0, input_bias = TRUE, ...)
 Ridge readout
 }
 \examples{
-reservoirpy <- reticulate::import("reservoirpy")
+\dontrun{
 node_Ridge(ridge = 0.5)
+}
 }

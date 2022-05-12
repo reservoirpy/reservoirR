@@ -4,12 +4,13 @@
 #' @param lr Leaking rate (1.0 by default).
 #' @param sr Spectral radius of W (optional).
 #' @param input_bias If False, no bias is added to inputs.
-#' @param ... 
+#' @param ... Additional parameters given to Reservoir from reservoirpy
 #'
 #' @export
 #' @examples
-#' reservoirpy <- reticulate::import("reservoirpy")
+#' \dontrun{
 #' node_Reservoir(units = as.integer(100), lr = 1.0, sr = 0.3)
+#' }
 node_Reservoir <- function(units = NULL,
                        lr = 1.0,
                        sr = NULL,

@@ -15,12 +15,13 @@ node_Reservoir(units = NULL, lr = 1, sr = NULL, input_bias = TRUE, ...)
 
 \item{input_bias}{If False, no bias is added to inputs.}
 
-\item{...}{}
+\item{...}{Additional parameters given to Reservoir from reservoirpy}
 }
 \description{
 Create a reservoir network
 }
 \examples{
-reservoirpy <- reticulate::import("reservoirpy")
+\dontrun{
 node_Reservoir(units = as.integer(100), lr = 1.0, sr = 0.3)
+}
 }
