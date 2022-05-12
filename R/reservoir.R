@@ -110,7 +110,7 @@ link <- function(node1, node2, name = NULL){
 #'@param formState array of shape \code{(1, output_dim)}, optional 
 #'Node state value to use at begining of computation.
 #'
-#'@param stateFul \code{bool}, default to \code{TRUE} 
+#'@param stateful \code{bool}, default to \code{TRUE} 
 #'If True, Node state will be updated by this operation.
 #'
 #'@param reset \code{bool}, default to \code{FALSE}
@@ -119,16 +119,16 @@ link <- function(node1, node2, name = NULL){
 #'@export
 predict_seq <- function(node,X,
                         formState = NULL,
-                        stateFul = TRUE,
+                        stateful = TRUE,
                         reset = FALSE){
   
   stopifnot(!is.null(node))
   stopifnot(is.list(X)| is.array(X))
-  stopifnot(is.logical(stateFul) & is.logical(reset))
+  stopifnot(is.logical(stateful) & is.logical(reset))
   
   pred <- node$run(X, from_state = formState, 
-           state_ful = stateFul, 
-           reset=reset)
+                   stateful = stateful, 
+                   reset=reset)
   return(pred)
 }
 
