@@ -8,6 +8,8 @@ skip_if_no_reservoir <- function() {
 test_that("reservoir", {
   skip_if_no_reservoir()
   
+  reservoirpy <- reticulate::import("reservoirpy")
+  
   timesteps <- 2500
   tau <- 17
   X <- as.vector(reservoirpy$datasets$mackey_glass(as.integer(timesteps), tau=as.integer(tau)))
