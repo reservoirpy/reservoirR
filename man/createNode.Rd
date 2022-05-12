@@ -6,6 +6,9 @@
 \usage{
 createNode(
   nodeType = c("Ridge"),
+  units = NULL,
+  lr = 1,
+  sr = NULL,
   otputDim = NULL,
   inputDim = NULL,
   name = NULL,
@@ -17,6 +20,10 @@ createNode(
 \arguments{
 \item{nodeType}{Type of node. Default is \code{"Ridge"}.}
 
+\item{units}{(int) optional 
+Number of reservoir units. If None, the number of units will be infered from
+the \code{W} matrix shape.}
+
 \item{otputDim}{Output dimension of the Node. Dimension of its state.}
 
 \item{inputDim}{Input dimension of the Node.}
@@ -25,11 +32,16 @@ createNode(
 
 \item{ridge}{float, default to \code{0.0}. L2 regularization parameter.}
 
-\item{inputBias}{bool, default to \code{TRUE}. If TRUE, then a bias parameter 
+\item{inputBias}{bool, default to \code{TRUE}. If \code{TRUE}, then a bias parameter 
 will be learned along with output weights.}
 
 \item{dtype}{Numerical type for node parameters}
 }
 \description{
 Function to create some node
+}
+\examples{
+\dontrun{
+readout <- createNode("Ridge")
+}
 }
