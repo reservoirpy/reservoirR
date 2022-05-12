@@ -1,4 +1,4 @@
-Package: Reservoir
+Package: reservoir
 Type: Package
 Title: Simple and flexible code for Reservoir Computing architectures like Echo State Networks
 Version: 0.1.2

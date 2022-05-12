@@ -2,6 +2,8 @@
 
 export(createNode)
 export(fit)
+export(generate_data)
 export(install_reservoirpy)
+export(link)
 export(predict_seq)
 import(reticulate)
