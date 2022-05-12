@@ -4,7 +4,7 @@
 \alias{predict_seq}
 \title{Run the node-forward function on a sequence of data}
 \usage{
-predict_seq(node, X, formState = NULL, stateFul = TRUE, reset = FALSE)
+predict_seq(node, X, formState = NULL, stateful = TRUE, reset = FALSE)
 }
 \arguments{
 \item{node}{node}
@@ -15,7 +15,7 @@ A sequence of data of shape (timesteps, features).}
 \item{formState}{array of shape \code{(1, output_dim)}, optional 
 Node state value to use at begining of computation.}
 
-\item{stateFul}{\code{bool}, default to \code{TRUE} 
+\item{stateful}{\code{bool}, default to \code{TRUE} 
 If True, Node state will be updated by this operation.}
 
 \item{reset}{\code{bool}, default to \code{FALSE}
