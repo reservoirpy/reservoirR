@@ -5,6 +5,6 @@
 #' Default is auto \code{(virtualenv is not available on Windows)}
 #' 
 #' @export
-install_reservoirpy <- function(envname='R-reticulate', method='auto') {
+install_reservoirpy <- function(envname='r-reticulate', method='auto') {
   reticulate::py_install("reservoirpy", envname=envname, method=method, pip=T)
 }
