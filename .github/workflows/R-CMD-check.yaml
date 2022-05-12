@@ -53,5 +53,10 @@ jobs:
           auto-update-conda: true
           python-version: 3.8
           activate-environment: r-reticulate
+      
+      - name: Install reservoirpy/reservoir
+        run: |
+          reservoir::install_reservoirpy()
+        shell: Rscript {0}
           
       - uses: r-lib/actions/check-r-package@v1
