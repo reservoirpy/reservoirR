@@ -22,7 +22,7 @@ Description: ReservoirR is a simple user-friendly library based on Python scient
 Config/reticulate:
   list(
     packages = list(
-      list(package = "reservoirpy")
+      list(package = "reservoirpy", pip=TRUE)
     )
   )
 License: GPL (>= 3)
