@@ -54,6 +54,17 @@ jobs:
           python-version: 3.8
           activate-environment: r-reticulate
       
+      - name: Install reticulate (CRAN)
+        run: |
+          install.packages('reticulate')
+        shell: Rscript {0}
+
+      - name: Install miniconda
+        run: |
+          Sys.setenv(RETICULATE_MINICONDA_PYTHON_VERSION="3.9")
+          reticulate::install_miniconda()
+        shell: Rscript {0}
+      
       - name: Install reservoirpy/reservoir
         run: |
           reservoir::install_reservoirpy()
