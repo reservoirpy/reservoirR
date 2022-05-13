@@ -1,4 +1,4 @@
-# reservoir-r-experimental
+# reservoirR
 Experimental R interface for ReservoirPy
 
 <!-- badges: start -->
