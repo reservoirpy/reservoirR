@@ -60,6 +60,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Install miniconda
+        if: runner.os != 'Windows'
         run: |
           Sys.setenv(RETICULATE_MINICONDA_PYTHON_VERSION="3.9")
           reticulate::install_miniconda()
