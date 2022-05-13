@@ -174,15 +174,15 @@ fit <- function(node, X, Y, warmup = 0){
 #' 
 #' @param n_timesteps (int) Number of time steps to compute.
 #' @param tau (int), default to 17 
-#' Time delay :math:`\\tau` of Mackey-Glass equation.
+#' Time delay :math:\code{\\tau} of Mackey-Glass equation.
 #' By defaults, equals to 17. Other values can
 #' change the choatic behaviour of the timeseries.
 #' @param a (float) default to 0.2
-#' :math:`a` parameter of the equation.
+#' :math:\code{a} parameter of the equation.
 #' @param b (float) default to 0.1
-#' :math:`b` parameter of the equation.
+#' :math:\code{b} parameter of the equation.
 #' @param n (int) default to 10
-#' :math:`n` parameter of the equation.
+#' :math:\code{n} parameter of the equation.
 #' @param x0 (float), optional, default to 1.2
 #' Initial condition of the timeseries.
 #' @param h (float), default to 1.0
