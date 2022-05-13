@@ -53,11 +53,6 @@ jobs:
           auto-update-conda: true
           python-version: 3.8
           activate-environment: r-reticulate
-      
-      - name: Install reticulate (CRAN)
-        run: |
-          install.packages('reticulate')
-        shell: Rscript {0}
 
       - name: Install miniconda
         if: runner.os != 'Windows'
