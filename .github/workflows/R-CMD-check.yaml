@@ -65,14 +65,7 @@ jobs:
           reticulate::install_miniconda()
         shell: Rscript {0}
       
-      - name: Install reservoir
-        working-directory: reservoir_repo
-        run: |
-          remotes::install_local()
-        shell: Rscript {0}
-      
       - name: Install reservoirpy/reservoir
-        working-directory: reservoir_repo
         run: |
           reservoir::install_reservoirpy()
         shell: Rscript {0}
