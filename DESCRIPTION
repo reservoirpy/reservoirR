@@ -37,7 +37,12 @@ Imports:
 Suggests:
     rmarkdown,
     knitr,
-    covr
+    covr,
+    dplyr,
+    ggplot2,
+    kableExtra,
+    tibble,
+    tidyr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Language: en-US

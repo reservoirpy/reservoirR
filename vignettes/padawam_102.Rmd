@@ -1,8 +1,8 @@
 ---
-title: "The basics first, you should learn"
+title: "The parameters optimisation second, you should learn"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{The basics first, you should learn}
+  %\VignetteIndexEntry{The parameters optimisation second, you should learn}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,7 +29,8 @@ timesteps <- 2500
 X <- reservoir::generate_data(timesteps)
 X <- 2 * (X - min(X)) / (max(X) - min(X)) - 1
 ```
-# Optimise parameters using DEoptim
+
+# Optimise parameters using random search
 
 ```{r}
 ntrain <- 1000
