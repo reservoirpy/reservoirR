@@ -1,0 +1,154 @@
+---
+title: "The basics first, you should learn"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The basics first, you should learn}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{python}
+import sys
+print(sys.version)
+```
+
+```{r setup}
+library(reservoir)
+library(dplyr)
+library(ggplot2)
+
+set.seed(1)
+```
+
+# Data
+
+First let's generate awesome data and fit 
+
+```{r results='hide'}
+timesteps <- 2500
+X <- reservoir::generate_data(timesteps)
+X <- 2 * (X - min(X)) / (max(X) - min(X)) - 1
+```
+# Optimise parameters using DEoptim
+
+```{r}
+ntrain <- 1000
+ntest <- 1000
+step <- 7
+Xtrain <- X[1:ntrain] %>% as.matrix()
+Ytrain <- X[(1+step):(ntrain+step)] %>% as.matrix()
+Xtest <- X[(ntrain+1):(ntrain + ntest)] %>% as.matrix()
+Ytest <- X[(ntrain+1+step):(ntrain + ntest + step)] %>% as.matrix()
+```
+
+```{r}
+fct_toOptim <- function(vec_hyperparam){
+  hp_ridge <- vec_hyperparam[1]
+  hp_lr <- vec_hyperparam[2]
+  hp_sr <- vec_hyperparam[3]
+  
+  readout <- reservoir::createNode("Ridge", ridge = hp_ridge)
+  reservoir <- reservoir::createNode("Reservoir", units = 100, lr=hp_lr, sr=hp_sr)
+  model <- reservoir::link(reservoir, readout)
+  
+  model = reservoir::fit(model, X=Xtrain, Y=Ytrain)
+  
+  vecPredictions = reservoir::predict_seq(node = model, X = Xtest) %>%
+    reticulate::py_to_r()
+  
+  mse <- mean((vecPredictions-Ytest)^2)
+  
+  return(mse)
+}
+```
+
+
+```{r}
+ls_fun_define_space <- list(ridge = function(n) 0.1,
+                            lr = function(n) runif(n = n, min = 0, max = 1),
+                            sr = function(n) runif(n = n, min = 0, max = 2))
+```
+
+```{r}
+randomsearch <- function(n = 100, ls_fun_define_space, fct_toOptim){
+  dfhyperparam <- lapply(X = ls_fun_define_space,
+                         FUN = function(x) x(n)) %>%
+    bind_rows()
+  
+  vecopt <- apply(dfhyperparam, MARGIN = 1, FUN = fct_toOptim)
+  
+  res <- dfhyperparam %>% mutate(opt = vecopt)
+  
+  return(res)
+}
+```
+
+
+```{r results='hide'}
+dfOptim <- randomsearch(n = 100,
+                        ls_fun_define_space = ls_fun_define_space,
+                        fct_toOptim = fct_toOptim)
+```
+
+```{r fig.height=5}
+ggplot(dfOptim, mapping = aes(x = sr, y = lr, color = opt)) +
+  geom_point() +
+  scale_color_gradient(low = "red", high = "white", trans = "log")
+```
+
+```{r}
+best_sr = 1.5
+best_lr = 0.5
+```
+
+
+We find that 
+
+# Compare performances
+
+```{r}
+reservoir_baseline <- reservoir::createNode("Reservoir", units = 100,  lr=0.2, sr=1)
+readout_baseline <- reservoir::createNode("Ridge", ridge = 0.1)
+model_baseline <- reservoir::link(reservoir_baseline, readout_baseline)
+
+reservoir_opti <- reservoir::createNode("Reservoir", units = 100,  lr=best_lr, sr=best_sr)
+readout_opti <- reservoir::createNode("Ridge", ridge = 0.1)
+model_opti <- reservoir::link(reservoir_opti, readout_opti)
+
+Xtrain <- as.matrix(X[1:(ntrain + ntest)])
+Ytrain <- as.matrix(X[(1+step):(ntrain + ntest + step)])
+
+Xtest <- as.matrix(X[(ntrain + ntest + 1):(length(X)-step)])
+Ytest <- as.matrix(X[(ntrain + ntest + 1 + step):(length(X))])
+
+lspred <- lapply(list(baseline = model_baseline,
+                      opti = model_opti),
+                 FUN = function(model){
+                   model = reservoir::fit(model, X=Xtrain, Y=Ytrain)
+                   vecPredictions = reservoir::predict_seq(node = model, X = Xtest) %>%
+                     reticulate::py_to_r()
+                   return(vecPredictions)
+                 })
+
+dfres <- lspred %>%
+  bind_rows() %>%
+  mutate(Observed = Ytest) %>%
+  tibble::rowid_to_column(var = "time") %>%
+  tidyr::pivot_longer(cols = c(Observed, baseline, opti))
+```
+
+```{r}
+ggplot(dfres, mapping = aes(x = time, y = value, color = name)) +
+  geom_line(alpha = 0.5)
+```
+
+```{r}
+dfres %>%
+  tidyr::pivot_wider() %>%
+  tidyr::pivot_longer(cols = c(baseline, opti)) %>%
+  group_by(name) %>%
+  summarise(mse = mean((value - Observed)^2)) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling()
+```
+
