@@ -20,13 +20,8 @@ import sys
 print(sys.version)
 ```
 
-```{r}
-reservoirpy <- reticulate::import("reservoirpy")
-```
-
-
 ```{r setup}
-library(Reservoir)
+library(reservoir)
 ```
 
 # Data
@@ -50,19 +45,19 @@ plot(awesome_data$t, awesome_data$y, type = "l")
 First we will define a reservoir network :
 
 ```{r}
-reservoir <- Reservoir::node_Reservoir(units = as.integer(100))
+reservoir <- reservoir::node_Reservoir(units = as.integer(100))
 ```
 
 Then the readout set as a Ridge function :
 
 ```{r}
-readout <- Reservoir::node_Ridge(ridge = 0.01)
+readout <- reservoir::node_Ridge(ridge = 0.01)
 ```
 
 And we connect them :
 
 ```{r}
-model <- Reservoir::link_nodes(reservoir, readout)
+model <- reservoir::link(reservoir, readout)
 ```
 
 # Train the model and predict
@@ -91,13 +86,13 @@ lsdf <- lapply(list(yTrain = yTrain,
 And now let's fit the model
 
 ```{r}
-fit <- Reservoir::fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain)
+fit <- reservoir::fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain)
 ```
 
 And predict
 
 ```{r}
-vecPredictions = Reservoir::predict_seq(node = fit, X = lsdf$xTest)
+vecPredictions = reservoir::predict_seq(node = fit, X = lsdf$xTest)
 ```
 
 We can compare the prediction and the truth :
