@@ -217,31 +217,32 @@ generate_data <- function(n_timesteps,
 }
 
 
-
-#' @title
-#' Operator \code{>>}
+#' @name %>>%
 #' 
-#' @description
-#' Take two nodes and applies \code{>>}
+#' @rdname chevron
+#' @aliases chevron
+#'
+#' @title Takes two nodes and applies python operator \code{>>}
 #' 
-#' @param node1 (Node)
-#' @param node2 (Node) 
+#' @description A port of the \code{>>} "chevron" operator from reservoirpy.
 #' 
-#' @return Node or list of nodes.
+#' @param node1 a \code{Node} or a list of \code{Nodes}
+#' @param node2 a \code{Node} or a list of \code{Nodes}
 #' 
-#'@importFrom reticulate import_from_path
+#' @return A node or a list of nodes.
 #'
 #' @examples
-#' \dontrun{
-#' source = reservoir::createNode("Input")
-#' reservoir = reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
-#' nodes_operator(source, reservoir)
+#' if(interactive()){
+#'   source <- reservoir::createNode("Input")
+#'   reservoir <- reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+#'   source %>>% reservoir
+#' 
+#'   readout <- reservoir::createNode("Ridge")
+#'   list(source %>>% reservoir, source) %>>% readout
 #' }
 #' 
 #' @export
-nodes_operator <- function(node1,node2){
-  reticulate::source_python("inst/python/rpython/rshift.py", envir = parent.frame(), convert = TRUE)
-  operatorRShift(node1,node2)
+`%>>%` <- function(node1, node2){
+  rp$rshift$operatorRShift(node1, node2)
 }
-
 

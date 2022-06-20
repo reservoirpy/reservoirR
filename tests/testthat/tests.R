@@ -17,10 +17,10 @@ test_that("reservoir", {
   Xtrain <- as.matrix(X[1:2001])
   Ytrain <- as.matrix(X[10:2010])
   
-  model = reservoir::fit(model, X=Xtrain, Y=Ytrain)
+  model <- reservoir::fit(model, X=Xtrain, Y=Ytrain)
   # Classification 
   # Example: [source >> reservoir, source] >> readout
-  model <- reservoir::nodes_operator(c(nodes_operator(source,reservoir),source), readout)
+  model <- list(source %>>% reservoir, source) %>>% readout
   model_fit <- reservoir::fit(node = model,X = Xtrain, Y = Ytrain, warmup = 2)
   
   Xtest <- as.matrix(X[2002:2500])
