@@ -39,7 +39,8 @@ createNode <- function(nodeType = c("Ridge"),
                        name = NULL,
                        ridge = 0.0,
                        inputBias = TRUE,
-                       dtype = "float64") {
+                       dtype = "float64",
+                       ...) {
   
   stopifnot(!is.null(nodeType))
 
@@ -63,7 +64,15 @@ createNode <- function(nodeType = c("Ridge"),
                                           sr = sr,
                                           name = name,
                                           input_bias = inputBias)
-  }else{
+  }
+  else if(nodeType=="Input"){
+    node <- reservoirpy$nodes$Input(input_dim = inputDim,
+                                    name = name,...)
+  }
+  else if(nodeType=="Output"){
+    node <- reservoirpy$nodes$Output(name = name,...)
+  }
+  else{
     NULL
   }
   return(py_to_r(node))
@@ -206,3 +215,33 @@ generate_data <- function(n_timesteps,
                                                  as.integer(n),x0,h)
   return(as.vector(timeSerie))
 }
+
+
+
+#' @title
+#' Operator \code{>>}
+#' 
+#' @description
+#' Take two nodes and applies \code{>>}
+#' 
+#' @param node1 (Node)
+#' @param node2 (Node) 
+#' 
+#' @return Node or list of nodes.
+#' 
+#'@importFrom reticulate import_from_path
+#'
+#' @examples
+#' \dontrun{
+#' source = reservoir::createNode("Input")
+#' reservoir = reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+#' nodes_operator(source, reservoir)
+#' }
+#' 
+#' @export
+nodes_operator <- function(node1,node2){
+  reticulate::source_python("inst/python/rpython/rshift.py", envir = parent.frame(), convert = TRUE)
+  operatorRShift(node1,node2)
+}
+
+

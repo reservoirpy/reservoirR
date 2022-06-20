@@ -14,7 +14,8 @@ createNode(
   name = NULL,
   ridge = 0,
   inputBias = TRUE,
-  dtype = "float64"
+  dtype = "float64",
+  ...
 )
 }
 \arguments{
