@@ -138,8 +138,7 @@ predict_seq <- function(node,X,
   pred <- node$run(X, from_state = formState, 
                    stateful = stateful, 
                    reset=reset)
-  
-  return(py_to_r(pred))
+  return(pred)
 }
 
 
