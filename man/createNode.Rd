@@ -43,12 +43,14 @@ Spectral radius of recurrent weight matrix.}
 will be learned along with output weights.}
 
 \item{dtype}{Numerical type for node parameters}
+
+\item{...}{Others params}
 }
 \description{
 Function to create some node
 }
 \examples{
-\dontrun{
+if(interactive()){
 readout <- createNode("Ridge")
 }
 }

@@ -18,18 +18,24 @@
 #'
 #'@param name Name of the Node. It must be a unique identifier.
 #'
-#'@param dtype Numerical type for node parameters
-#'
 #'@param ridge float, default to \code{0.0}. L2 regularization parameter. 
 #'
 #'@param inputBias bool, default to \code{TRUE}. If \code{TRUE}, then a bias parameter 
 #'will be learned along with output weights.
 #'
-#' @examples
-#' \dontrun{
+#'@param dtype Numerical type for node parameters
+#'
+#'@param ... Others params
+#' 
+#'@importFrom reticulate py_to_r
+#'@import testthat
+#'
+#'@export
+#'
+#'@examples
+#' if(interactive()){
 #' readout <- createNode("Ridge")
 #' }
-#'@export
 createNode <- function(nodeType = c("Ridge"), 
                        units = NULL,
                        lr = 1.0,
@@ -95,6 +101,8 @@ createNode <- function(nodeType = c("Ridge"),
 #'@param name (str) optional
 #'Name for the chaining Model.
 #'
+#'@importFrom reticulate py_to_r
+#' 
 #'@export
 #'
 link <- function(node1, node2, name = NULL){
@@ -163,6 +171,8 @@ predict_seq <- function(node,X,
 #'
 #'@param stateful is boolen
 #'
+#'@importFrom reticulate py_to_r
+#' 
 #'@export
 fit <- function(node, X, Y, warmup = 0, stateful=FALSE){
   
@@ -207,14 +217,16 @@ fit <- function(node, X, Y, warmup = 0, stateful=FALSE){
 #' 
 #' @return array of shape (n_timesteps, 1) Mackey-Glass timeseries.
 #' 
+#' @importFrom reticulate py_to_r
+#' 
+#' @export
+#' 
 #' @examples
 #' if(interactive()){
 #' japanese_vowels <- generate_data(dataset="japanese_vowels")
 #' timeSerie <- generate_data(dataset = "mackey_glass",n_timesteps = 2500)
 #' res =generate_data(dataset <- "both",n_timesteps = 2500)
 #' }
-#' 
-#' @export
 generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
                           one_hot_encode=TRUE, repeat_targets=FALSE, 
                           reload=FALSE,
@@ -258,6 +270,8 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
 #' 
 #' @return A node or a list of nodes.
 #'
+#' @export
+#' 
 #' @examples
 #' if(interactive()){
 #'   source <- reservoir::createNode("Input")
@@ -267,8 +281,6 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
 #'   readout <- reservoir::createNode("Ridge")
 #'   list(source %>>% reservoir, source) %>>% readout
 #' }
-#' 
-#' @export
 `%>>%` <- function(node1, node2){
   rp$rshift$operatorRShift(node1, node2)
 }

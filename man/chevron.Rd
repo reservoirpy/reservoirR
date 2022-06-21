@@ -27,5 +27,4 @@ if(interactive()){
   readout <- reservoir::createNode("Ridge")
   list(source \%>>\% reservoir, source) \%>>\% readout
 }
-
 }

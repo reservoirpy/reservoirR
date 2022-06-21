@@ -14,8 +14,8 @@ err_rshift <- function(e) {
   message("Error importing reservoir python functions")
   message("Something went wrong the package installation")
 }
-
-#' @import reticulate
+#'@importFrom reticulate import
+#'@importFrom reticulate import_from_path
 reservoirpy <- NULL
 .onLoad <- function(libname, pkgname) {
   reservoirpy <<- reticulate::import("reservoirpy", convert = FALSE,

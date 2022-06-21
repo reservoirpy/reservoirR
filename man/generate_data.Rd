@@ -64,5 +64,4 @@ japanese_vowels <- generate_data(dataset="japanese_vowels")
 timeSerie <- generate_data(dataset = "mackey_glass",n_timesteps = 2500)
 res =generate_data(dataset <- "both",n_timesteps = 2500)
 }
-
 }
