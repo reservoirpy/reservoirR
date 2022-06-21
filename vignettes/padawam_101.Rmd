@@ -7,18 +7,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  engine.path = '~/.virtualenvs/test/bin/python'
-)
-```
-
-```{python}
-import sys
-print(sys.version)
-```
+# ```{r, include = FALSE}
+# knitr::opts_chunk$set(
+#   collapse = TRUE,
+#   comment = "#>",
+#   engine.path = '~/.virtualenvs/test/bin/python'
+# )
+# ```
+# 
+# ```{python}
+# import sys
+# print(sys.version)
+# ```
 
 ```{r setup}
 library(reservoir)
@@ -101,4 +101,3 @@ We can compare the prediction and the truth :
 plot(awesome_data$t[51:n], yTest, type = "l")
 lines(awesome_data$t[51:n], vecPredictions, col = "red")
 ```
-
