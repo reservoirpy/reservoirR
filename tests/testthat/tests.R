@@ -19,10 +19,15 @@ test_that("reservoir", {
   model <- reservoir::fit(model, X=Xtrain, Y=Ytrain)
   
   # Classification 
-  japanese_vowels <- reservoir::generate_data(dataset = "japanese_vowels",repeat_targets=TRUE)$japanese_vowels
+  japanese_vowels <- reservoir::generate_data(
+    dataset = "japanese_vowels",
+    repeat_targets=TRUE)$japanese_vowels
+  
   source <- reservoir::createNode("Input")
   readout <- reservoir::createNode("Ridge",ridge=1e-6)
-  reservoir <- reservoir::createNode("Reservoir", units = 500,  lr=0.1, sr=0.9)
+  reservoir <- reservoir::createNode("Reservoir", 
+                                     units = 500,  
+                                     lr=0.1, sr=0.9)
   
   
   # Example: [source >> reservoir, source] >> readout
@@ -35,7 +40,7 @@ test_that("reservoir", {
                               warmup = 2)
   
   Y_pred <- reservoir::predict_seq(node = model_fit, X = japanese_vowels$X_test,stateful = FALSE)
-  Y_pred <- reticulate::py_to_r(Y_pred)
+  Y_pred <- py_to_r(Y_pred)
   # formal test
   testthat::expect(class(model)[1] == "reservoirpy.model.Model",
                    failure_message = "Output of fit function is not a reservoirpy.model.Model object")
