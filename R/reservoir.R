@@ -18,18 +18,24 @@
 #'
 #'@param name Name of the Node. It must be a unique identifier.
 #'
-#'@param dtype Numerical type for node parameters
-#'
 #'@param ridge float, default to \code{0.0}. L2 regularization parameter. 
 #'
 #'@param inputBias bool, default to \code{TRUE}. If \code{TRUE}, then a bias parameter 
 #'will be learned along with output weights.
 #'
-#' @examples
-#' \dontrun{
+#'@param dtype Numerical type for node parameters
+#'
+#'@param ... Others params
+#' 
+#'@importFrom reticulate py_to_r
+#'@import testthat
+#'
+#'@export
+#'
+#'@examples
+#' if(interactive()){
 #' readout <- createNode("Ridge")
 #' }
-#'@export
 createNode <- function(nodeType = c("Ridge"), 
                        units = NULL,
                        lr = 1.0,
@@ -39,7 +45,8 @@ createNode <- function(nodeType = c("Ridge"),
                        name = NULL,
                        ridge = 0.0,
                        inputBias = TRUE,
-                       dtype = "float64") {
+                       dtype = "float64",
+                       ...) {
   
   stopifnot(!is.null(nodeType))
 
@@ -63,7 +70,15 @@ createNode <- function(nodeType = c("Ridge"),
                                           sr = sr,
                                           name = name,
                                           input_bias = inputBias)
-  }else{
+  }
+  else if(nodeType=="Input"){
+    node <- reservoirpy$nodes$Input(input_dim = inputDim,
+                                    name = name,...)
+  }
+  else if(nodeType=="Output"){
+    node <- reservoirpy$nodes$Output(name = name,...)
+  }
+  else{
     NULL
   }
   return(py_to_r(node))
@@ -86,6 +101,8 @@ createNode <- function(nodeType = c("Ridge"),
 #'@param name (str) optional
 #'Name for the chaining Model.
 #'
+#'@importFrom reticulate py_to_r
+#' 
 #'@export
 #'
 link <- function(node1, node2, name = NULL){
@@ -110,7 +127,7 @@ link <- function(node1, node2, name = NULL){
 #'@param formState array of shape \code{(1, output_dim)}, optional 
 #'Node state value to use at begining of computation.
 #'
-#'@param stateFul \code{bool}, default to \code{TRUE} 
+#'@param stateful \code{bool}, default to \code{TRUE} 
 #'If True, Node state will be updated by this operation.
 #'
 #'@param reset \code{bool}, default to \code{FALSE}
@@ -119,16 +136,16 @@ link <- function(node1, node2, name = NULL){
 #'@export
 predict_seq <- function(node,X,
                         formState = NULL,
-                        stateFul = TRUE,
+                        stateful = TRUE,
                         reset = FALSE){
   
   stopifnot(!is.null(node))
   stopifnot(is.list(X)| is.array(X))
-  stopifnot(is.logical(stateFul) & is.logical(reset))
+  stopifnot(is.logical(stateful) & is.logical(reset))
   
   pred <- node$run(X, from_state = formState, 
-           state_ful = stateFul, 
-           reset=reset)
+                   stateful = stateful, 
+                   reset=reset)
   return(pred)
 }
 
@@ -152,13 +169,17 @@ predict_seq <- function(node,X,
 #'Number of timesteps to consider as warmup and 
 #'discard at the begining of each timeseries before training.
 #'
+#'@param stateful is boolen
+#'
+#'@importFrom reticulate py_to_r
+#' 
 #'@export
-fit <- function(node, X, Y, warmup = 0){
+fit <- function(node, X, Y, warmup = 0, stateful=FALSE){
   
   stopifnot(!is.null(node))
-  stopifnot(is.array(X) & is.array(Y))
+  stopifnot(!is.null(X) & !is.null(Y))
   
-  fit <- node$fit(X, Y, warmup = as.integer(warmup))
+  fit <- node$fit(X, Y, warmup = as.integer(warmup), stateful = stateful)
   return(py_to_r(fit))
 }
 
@@ -166,12 +187,18 @@ fit <- function(node, X, Y, warmup = 0){
 
 
 #' @title
-#' Load data from the Mackey-Glass delayed differential equation
+#' Load data from the \code{Japanese vowels} or the \code{Mackey-Glass} 
 #' 
 #' @description
-#' Mackey-Glass time series \code{[8]_ [9]_}~, computed from the Mackey-Glass
+#' Mackey-Glass time series \code{[8]_ [9]_}, computed from the Mackey-Glass
 #' delayed differential equation:
 #' 
+#' @param dataset (String) take value in array \code{[japanese_vowels,mackey_glass]}
+#' @param one_hot_encode (bool), default to True. If True, returns class label as a one-hot encoded vector.
+#' @param repeat_targets (bool), default to False. If True, repeat the target label or vector along the time axis of the corresponding sample.
+#' @param reload (bool), default to False
+#' If True, re-download data from remote repository. Else, if a cached version
+#' of the dataset exists, use the cached dataset.
 #' @param n_timesteps (int) Number of time steps to compute.
 #' @param tau (int), default to 17 
 #' Time delay :math:`\\tau` of Mackey-Glass equation.
@@ -190,19 +217,71 @@ fit <- function(node, X, Y, warmup = 0){
 #' 
 #' @return array of shape (n_timesteps, 1) Mackey-Glass timeseries.
 #' 
-#' @examples
-#' \dontrun{
-#' timeSerie <- generate_data(2500)
-#' timeSerie
-#' }
+#' @importFrom reticulate py_to_r
 #' 
 #' @export
-generate_data <- function(n_timesteps, 
+#' 
+#' @examples
+#' if(interactive()){
+#' japanese_vowels <- generate_data(dataset="japanese_vowels")
+#' timeSerie <- generate_data(dataset = "mackey_glass",n_timesteps = 2500)
+#' res =generate_data(dataset <- "both",n_timesteps = 2500)
+#' }
+generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
+                          one_hot_encode=TRUE, repeat_targets=FALSE, 
+                          reload=FALSE,
+                          n_timesteps, 
                           tau=17, a = 0.2, b = 0.1, 
                           n = 10, x0 = 1.2, h = 1.0){
-  stopifnot(!is.null(n_timesteps))
-  timeSerie <- reservoirpy$datasets$mackey_glass(as.integer(n_timesteps),
+  
+  if(length(dataset)>1) {
+    dataset <- dataset[1]
+  }
+  stopifnot(dataset %in% c("japanese_vowels", "mackey_glass","both"))
+  data_generated <- list()
+  if(dataset %in% c("japanese_vowels","both")){
+    data_generated[["japanese_vowels"]] <- py_to_r(reservoirpy$datasets$japanese_vowels(one_hot_encode=one_hot_encode, 
+                                                                   repeat_targets=repeat_targets,
+                                                                   reload=reload))
+    names(data_generated[["japanese_vowels"]]) <- c("X_train", "Y_train", "X_test", "Y_test")
+  }
+  if(dataset %in% c("mackey_glass","both")){
+    stopifnot(!is.null(n_timesteps))
+    data_generated[["mackey_glass"]] <- as.vector(reservoirpy$datasets$mackey_glass(as.integer(n_timesteps),
                                                  as.integer(tau),a,b,
-                                                 as.integer(n),x0,h)
-  return(as.vector(timeSerie))
+                                                 as.integer(n),x0,h))
+  }
+  return(data_generated)
 }
+
+
+
+#' @name %>>%
+#' 
+#' @rdname chevron
+#' @aliases chevron
+#'
+#' @title Takes two nodes and applies python operator \code{>>}
+#' 
+#' @description A port of the \code{>>} "chevron" operator from reservoirpy.
+#' 
+#' @param node1 a \code{Node} or a list of \code{Nodes}
+#' @param node2 a \code{Node} or a list of \code{Nodes}
+#' 
+#' @return A node or a list of nodes.
+#'
+#' @export
+#' 
+#' @examples
+#' if(interactive()){
+#'   source <- reservoir::createNode("Input")
+#'   reservoir <- reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+#'   source %>>% reservoir
+#' 
+#'   readout <- reservoir::createNode("Ridge")
+#'   list(source %>>% reservoir, source) %>>% readout
+#' }
+`%>>%` <- function(node1, node2){
+  rp$rshift$operatorRShift(node1, node2)
+}
+

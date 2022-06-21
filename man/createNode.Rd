@@ -14,7 +14,8 @@ createNode(
   name = NULL,
   ridge = 0,
   inputBias = TRUE,
-  dtype = "float64"
+  dtype = "float64",
+  ...
 )
 }
 \arguments{
@@ -42,12 +43,14 @@ Spectral radius of recurrent weight matrix.}
 will be learned along with output weights.}
 
 \item{dtype}{Numerical type for node parameters}
+
+\item{...}{Others params}
 }
 \description{
 Function to create some node
 }
 \examples{
-\dontrun{
+if(interactive()){
 readout <- createNode("Ridge")
 }
 }
