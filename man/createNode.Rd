@@ -14,6 +14,7 @@ createNode(
   name = NULL,
   ridge = 0,
   inputBias = TRUE,
+  input_scaling = TRUE,
   dtype = "float64"
 )
 }
@@ -40,6 +41,10 @@ Spectral radius of recurrent weight matrix.}
 
 \item{inputBias}{bool, default to \code{TRUE}. If \code{TRUE}, then a bias parameter 
 will be learned along with output weights.}
+
+\item{input_scaling}{float or array-like of shapes (features), default to \code{1.0}.
+Input gain. An array of the same dimension as the inputs can be used to
+set up different input scaling for each feature.}
 
 \item{dtype}{Numerical type for node parameters}
 }

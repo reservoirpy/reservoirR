@@ -25,6 +25,10 @@
 #'@param inputBias bool, default to \code{TRUE}. If \code{TRUE}, then a bias parameter 
 #'will be learned along with output weights.
 #'
+#'@param input_scaling float or array-like of shapes (features), default to \code{1.0}.
+#' Input gain. An array of the same dimension as the inputs can be used to
+#' set up different input scaling for each feature.
+#'
 #' @examples
 #' \dontrun{
 #' readout <- createNode("Ridge")
@@ -39,6 +43,7 @@ createNode <- function(nodeType = c("Ridge"),
                        name = NULL,
                        ridge = 0.0,
                        inputBias = TRUE,
+                       input_scaling = TRUE,
                        dtype = "float64") {
   
   stopifnot(!is.null(nodeType))
@@ -56,13 +61,15 @@ createNode <- function(nodeType = c("Ridge"),
                                         lr = lr,
                                         sr = sr,
                                         name = name,
-                                        input_bias = inputBias)
+                                        input_bias = inputBias,
+                                        input_scaling = input_scaling)
     else
       node <- reservoirpy$nodes$Reservoir(units = units,
                                           lr = lr,
                                           sr = sr,
                                           name = name,
-                                          input_bias = inputBias)
+                                          input_bias = inputBias,
+                                          input_scaling = input_scaling)
   }else{
     NULL
   }
@@ -129,7 +136,7 @@ predict_seq <- function(node,X,
   pred <- node$run(X, from_state = formState, 
                    stateful = stateful, 
                    reset=reset)
-  return(pred)
+  return(reticulate::py_to_r(pred))
 }
 
 
