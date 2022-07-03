@@ -2,11 +2,33 @@
 % Please edit documentation in R/reservoir.R
 \name{generate_data}
 \alias{generate_data}
-\title{Load data from the Mackey-Glass delayed differential equation}
+\title{Load data from the \code{Japanese vowels} or the \code{Mackey-Glass}}
 \usage{
-generate_data(n_timesteps, tau = 17, a = 0.2, b = 0.1, n = 10, x0 = 1.2, h = 1)
+generate_data(
+  dataset = c("japanese_vowels", "mackey_glass", "both"),
+  one_hot_encode = TRUE,
+  repeat_targets = FALSE,
+  reload = FALSE,
+  n_timesteps,
+  tau = 17,
+  a = 0.2,
+  b = 0.1,
+  n = 10,
+  x0 = 1.2,
+  h = 1
+)
 }
 \arguments{
+\item{dataset}{(String) take value in array \code{[japanese_vowels,mackey_glass]}}
+
+\item{one_hot_encode}{(bool), default to True. If True, returns class label as a one-hot encoded vector.}
+
+\item{repeat_targets}{(bool), default to False. If True, repeat the target label or vector along the time axis of the corresponding sample.}
+
+\item{reload}{(bool), default to False
+If True, re-download data from remote repository. Else, if a cached version
+of the dataset exists, use the cached dataset.}
+
 \item{n_timesteps}{(int) Number of time steps to compute.}
 
 \item{tau}{(int), default to 17 
@@ -33,13 +55,13 @@ Time delta between two discrete timesteps.}
 array of shape (n_timesteps, 1) Mackey-Glass timeseries.
 }
 \description{
-Mackey-Glass time series \code{[8]_ [9]_}~, computed from the Mackey-Glass
+Mackey-Glass time series \code{[8]_ [9]_}, computed from the Mackey-Glass
 delayed differential equation:
 }
 \examples{
-\dontrun{
-timeSerie <- generate_data(2500)
-timeSerie
+if(interactive()){
+japanese_vowels <- generate_data(dataset="japanese_vowels")
+timeSerie <- generate_data(dataset = "mackey_glass",n_timesteps = 2500)
+res =generate_data(dataset <- "both",n_timesteps = 2500)
 }
-
 }

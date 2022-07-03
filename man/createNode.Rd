@@ -15,7 +15,8 @@ createNode(
   ridge = 0,
   inputBias = TRUE,
   input_scaling = TRUE,
-  dtype = "float64"
+  dtype = "float64",
+  ...
 )
 }
 \arguments{
@@ -47,12 +48,15 @@ Input gain. An array of the same dimension as the inputs can be used to
 set up different input scaling for each feature.}
 
 \item{dtype}{Numerical type for node parameters}
+
+\item{...}{Others params}
 }
 \description{
 Function to create some node
 }
 \examples{
-\dontrun{
+if(interactive()){
 readout <- createNode("Ridge")
 }
+
 }
