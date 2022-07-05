@@ -7,97 +7,222 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# ```{r, include = FALSE}
-# knitr::opts_chunk$set(
-#   collapse = TRUE,
-#   comment = "#>",
-#   engine.path = '~/.virtualenvs/test/bin/python'
-# )
-# ```
-# 
-# ```{python}
-# import sys
-# print(sys.version)
-# ```
-
 ```{r setup}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+set.seed(1)
+```
+
+```{r}
 library(reservoir)
+library(ggplot2)
+library(dplyr)
 ```
 
-# Data
+# Goal
 
-First let's generate awesome data
+Here you will learn basic use of reservoir package. This will be illustrated with the covid-19 dataset included in the pakage. Those data contain the hospitalisations, positive RT-PCR an IPTCC from the Bordeaux Hospital. The data below 10 have been set to 0 for privacy issues. Our goal will be to forecast the number of hospitalised patients 14 days ahead. To do so, we will first learn on data prior to 2021-07-01 and forecats on the following data.
+
+We can load the data and set the given task :
 
 ```{r}
-n <- 10^2
-awesome_data <- data.frame(t = 1:n,
-                           x1 = rbinom(n = n, size = 1, prob = .5))
-awesome_data$x2 <- sin(awesome_data$t/10)*2
-awesome_data$y <- awesome_data$x2^2
+data("dfCovid")
+
+dist_forecast = 14
+
+traintest_date = as.Date("2021-07-01")
 ```
+
+# Covid-19 data
+
+Because both iptcc and RT-PCR have strong variations, we will first proceed by taking the moving average on the last 7 days of those features. Also we add an outcome and an outcomeDate colum which will be useful to train the model.
 
 ```{r}
-plot(awesome_data$t, awesome_data$y, type = "l")
+dfOutcome <- dfCovid %>%
+  # outcome at 14 days
+  mutate(outcome = lead(x = hospitalisations, n = dist_forecast),
+         outcomeDate = date + dist_forecast) %>%
+  # rolling average for iptcc and positive_pcr
+  mutate_at(.vars = c("iptcc", "positive_pcr"),
+            .funs = function(x) slider::slide_dbl(.x = x,
+                                                  .before = 6,
+                                                  .f = mean))
 ```
 
-# Echo state network setup
+Now that we have our data ready, we can plot those :
 
-First we will define a reservoir network :
+```{r fig.cap = "Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.", fig.height=6, fig.width=6}
+dfOutcome %>%
+  tidyr::pivot_longer(cols = c("hospitalisations", "iptcc", "positive_pcr")) %>%
+  ggplot2::ggplot(mapping = aes(x = date, y = value)) +
+  geom_line() +
+  facet_grid(name ~ ., scales = "free_y") +
+  theme_bw() +
+  geom_vline(mapping = aes(color = "train-test sets", xintercept = traintest_date)) +
+  labs(color = "") +
+  theme(legend.position = "bottom")
+```
+
+The data looks good, let's start our first reservoir !
+
+# First reservoir
+
+Setting a reservoir is easily done with the `createNode()` function. The important hyperparameters are the following :
+
+*to complete*
+
+- Number of nodes
+- Leaking rate
+- Spectral radius
+- Input scaling
 
 ```{r}
-reservoir <- reservoir::createNode(nodeType = "Reservoir", units = 100)
+reservoir <- reservoir::createNode(nodeType = "Reservoir",
+                                   units = 1000,
+                                   lr = 0.7,
+                                   sr = 1,
+                                   input_scaling = 1)
 ```
 
-Then the readout set as a Ridge function :
+Then we can feed the data to the reservoir and see the activation depending on time of the reservoir. To do so, we first prepare the data and transform it to an array.
+
+```{r}
+## select explanatory data of 2020 and transform it to an array
+X <- dfOutcome %>%
+  filter(date < as.Date("2021-01-01")) %>%
+  select(hospitalisations, iptcc, positive_pcr) %>%
+  as.matrix() %>%
+  as.array()
+```
+
+Then we run the `predict_seq` function. The parameter reset is set to TRUE to be sure that the node is clear from data (it is optional here).
+
+```{r}
+reservoir_state <- predict_seq(node = reservoir, X = X, reset = TRUE)
+```
+
+Now we might want to visualise it so we can make a plot of this :
+
+```{r fig.cap="Node acivation over time.", fig.height=5, fig.width=5}
+plot(reservoir_state)
+```
+
+We see a lot of nodes with a steady state after time 100 and do not move after that. It will be really difficult for the ridge output layer to learn on this node because they present nearly no information. The problem is caused by the different scales of the features, to take this into account, we can scale them between -1 and 1 with the following function :
+
+```{r}
+stand_minmax <- function(x) return((x - min(x))/(max(x) - min(x))*2-1)
+```
+
+We prepare the scaled data, feed them to the reservoir and plot the node activation.
+
+```{r fig.cap="Node acivation over time. Scaled features", fig.height=5, fig.width=5}
+# scaled features
+Xstand <- dfOutcome %>%
+  filter(date < as.Date("2021-01-01")) %>%
+  select(hospitalisations, iptcc, positive_pcr) %>%
+  mutate_all(.funs = stand_minmax) %>%
+  as.matrix() %>%
+  as.array()
+# feed them to the reservoir
+reservoir_state_stand <- predict_seq(node = reservoir, X = Xstand, reset = TRUE)
+# plot the output
+plot(reservoir_state_stand)
+```
+
+Much better !
+
+# Forecast
+
+Ok, now, let's use train the ridge layer to make some forecast. We will train the ESN on data before `r traintest_date` and predict on the other data.
+
+## Set the ESN
+
+We define a readout set as a Ridge function :
 
 ```{r}
 readout <- reservoir::createNode(nodeType = "Ridge", ridge = 0.01)
 ```
 
-And we connect them :
+And we connect it to the previously defined reservoir :
 
 ```{r}
 model <- reservoir::link(reservoir, readout)
 ```
 
-# Train the model and predict
+The model is now ready let's handle the data !
 
-Let's try to predict 7 time points ahead then :
+## Set the data
+
+First we separate the train set on which we will learn the ridge coefficients and the test set on which we will make the forecast :
 
 ```{r}
 # train set
-yTrain <- awesome_data$y[8:50]
-xTrain <- awesome_data[1:43, c("x1", "x2")]
+yTrain <- dfOutcome %>% filter(date <= traintest_date) %>% select(outcome)
+xTrain <- dfOutcome %>% filter(date <= traintest_date) %>% select(hospitalisations, iptcc, positive_pcr)
 # test set
-xTest <- awesome_data[44:(n-7), c("x1", "x2")]
-yTest <- awesome_data$y[51:n]
+xTest <- dfOutcome %>% select(hospitalisations, iptcc, positive_pcr)
 ```
 
-Before to fit the model we have to convert them to array :
+We now standardise with the same formula as seen before. We learn the standardisation on the training set :
 
 ```{r}
+# standardise based on training set values
+ls_fct_stand <- apply(xTrain,
+                      MARGIN = 2,
+                      FUN = function(x) function(feature) return((feature - min(x))/(max(x) - min(x))*2-1))
+```
+
+And we apply it to both the train and test sets :
+
+```{r results='hide'}
+xTrainstand <- xTrain
+xTeststand <- xTest
+lapply(X = names(ls_fct_stand),
+       FUN = function(x){
+         xTrainstand[,x] <<- ls_fct_stand[[x]](feature = xTrain[,x])
+         xTeststand[,x] <<- ls_fct_stand[[x]](feature = xTest[,x])
+         return()
+       })
+```
+
+Finally we convert all those data to array :
+
+```{r}
+# convert to array
 lsdf <- lapply(list(yTrain = yTrain,
-            xTrain = xTrain,
-            xTest = xTest,
-            yTest = yTest),
-       function(x) as.array(as.matrix(x)))
+                    xTrain = xTrainstand,
+                    xTest = xTeststand),
+               function(x) as.array(as.matrix(x)))
 ```
 
-And now let's fit the model
+Et voilà !
+
+## Train the model and predict
+
+Now, the easy part. We are going to train the reservoir with the train set. To do so, we set a warmup of 30 days during which the data are propagating into the reservoir but not used to fit the ridge layer.
 
 ```{r}
-fit <- reservoir::fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain)
+### train the reservoir ridge output
+fit <- reservoir::fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain, warmup = 30, reset = TRUE)
 ```
 
-And predict
+Now that the ridge layer is trained, we can perform predictions as seen before. We set the parameter `reset` to TRUE in order to clean the reservoir from the data used by the training set.
 
 ```{r}
-vecPredictions = reservoir::predict_seq(node = fit, X = lsdf$xTest)
+### predict with the reservoir
+vec_pred <- reservoir::predict_seq(node = fit, X = lsdf$xTest, reset = TRUE)
 ```
 
-We can compare the prediction and the truth :
+```{r fig.cap="Forecast", fig.height=4, fig.width=5}
+dfOutcome %>%
+  mutate(pred = vec_pred) %>%
+  ggplot(mapping = aes(x = outcomeDate)) +
+  geom_line(mapping = aes(y = outcome, color = "observed")) +
+  geom_line(mapping = aes(y = pred, color = "forecast")) +
+  geom_vline(mapping = aes(color = "train-test sets", xintercept = traintest_date)) +
+  scale_color_manual(values = c("#3772ff", "#080708", "#df2935")) +
+  theme_bw() +
+  labs(color = "", x = "Date", y = "Hospitalisations")
 
-```{r}
-plot(awesome_data$t[51:n], yTest, type = "l")
-lines(awesome_data$t[51:n], vecPredictions, col = "red")
 ```
+
