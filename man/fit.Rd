@@ -4,7 +4,7 @@
 \alias{fit}
 \title{Offline fitting method of a Node}
 \usage{
-fit(node, X, Y, warmup = 0, stateful = FALSE)
+fit(node, X, Y, warmup = 0, stateful = FALSE, reset = FALSE)
 }
 \arguments{
 \item{node}{node}
@@ -25,6 +25,8 @@ Number of timesteps to consider as warmup and
 discard at the begining of each timeseries before training.}
 
 \item{stateful}{is boolen}
+
+\item{reset}{is boolean. Should the node status be reset before fitting.}
 }
 \description{
 Offline fitting method of a Node

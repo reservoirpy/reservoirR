@@ -153,7 +153,12 @@ predict_seq <- function(node,X,
   pred <- node$run(X, from_state = formState, 
                    stateful = stateful, 
                    reset=reset)
-  return(reticulate::py_to_r(pred))
+  
+  res <- reticulate::py_to_r(pred)
+  
+  class(res) <- c(class(res), "reservoir_predict_seq")
+  
+  return(res)
 }
 
 
@@ -178,15 +183,22 @@ predict_seq <- function(node,X,
 #'
 #'@param stateful is boolen
 #'
+#'
+#' @param reset is boolean. Should the node status be reset before fitting.
+#'
 #'@importFrom reticulate py_to_r
 #' 
 #'@export
-fit <- function(node, X, Y, warmup = 0, stateful=FALSE){
+fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
   
   stopifnot(!is.null(node))
   stopifnot(!is.null(X) & !is.null(Y))
   
-  fit <- node$fit(X, Y, warmup = as.integer(warmup), stateful = stateful)
+  fit <- node$fit(X,
+                  Y,
+                  warmup = as.integer(warmup),
+                  stateful = stateful,
+                  reset = reset)
   return(py_to_r(fit))
 }
 
