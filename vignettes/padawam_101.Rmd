@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 set.seed(1)
@@ -226,3 +226,4 @@ dfOutcome %>%
 
 ```
 
+We can see on the graph that during the learning set, the model forecast is superposed with the observed values which is expected. During the test set, the model recovers the first peak of the summer 2021 but overestimate forecast during the winter 2021-2022. This is probably because of the strong effect of the vaccination and the rising of new variants which are not taken into account here.
