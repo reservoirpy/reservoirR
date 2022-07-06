@@ -12,9 +12,6 @@ Reservoir Computing (RC) is well suited to both regression and classification ta
 ```{r setup}
 library(reservoir)
 library(ggplot2)
-#install.packages("remotes")
-#remotes::install_github("paulhendricks/scorer")
-library(scorer)
 ```
 
 # Classification - The Japanese vowel dataset
@@ -93,9 +90,7 @@ model_fit <- fit(node = model,
 Y_pred <- predict_seq(node = model_fit, 
                       X = X_test[[1]],
                       stateful = FALSE)
-class(X_test[[1]])
 Y_pred
-
 ```
 
 Get the scores:
@@ -103,13 +98,21 @@ Get the scores:
 There are 9 speakers, hence the output space is 9-dimensional. The speaker label is the index of the output neuron with maximum activation.
 
 ```{r}
+accuracy <- function(pred, truth){
+  mean(pred == truth)
+}
+```
+
+```{r}
 Y_pred_class <- sapply(Y_pred, FUN = function(x) apply(as.matrix(x),1,which.max))
-Y_test_class <- sapply(Y_test, FUN = function(x) apply(as.matrix(x),1,which.max))
-score <- accuracy_score(y_true = as.factor(unlist(Y_test_class)),
-                       y_pred = as.factor(unlist(Y_pred_class)))
+Y_test_class <- sapply(Y_test[[1]], FUN = function(x) apply(as.matrix(x),1,which.max))
+score <- accuracy(Y_pred_class, Y_test_class)
 
 print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
 ```
+
+
+
 
 # Classification (sequence-to-vector model)
 
@@ -152,6 +155,7 @@ for (x in X_train) {
 
 We can now train the readout only on the last state vectors. Here, Y_train is an array storing a single label for each utterance.
 
+
 ```{r}
 model_fit <- fit(node = readout,
                  X = states_train,
@@ -174,8 +178,11 @@ for (x in X_train) {
 ```{r}
 Y_pred_class <- sapply(Y_pred, FUN = function(x) apply(as.matrix(x),1,which.max))
 Y_test_class <- sapply(Y_test, FUN = function(x) apply(as.matrix(x),1,which.max))
-score <- accuracy_score(y_true = as.factor(unlist(Y_test_class)),
-                       y_pred = as.factor(unlist(Y_pred_class)))
+
+
+
+score <- accuracy(pred = as.factor(unlist(Y_test_class)),
+                       truth = as.factor(unlist(Y_pred_class)))
 
 print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
 ```
