@@ -48,13 +48,17 @@ for (i in 0:8) {
  X_speaker <- X_train[((i*sample_per_speaker)+1):((i+1)*sample_per_speaker)]
  X_train_per_speaker[[i+1]]<-(as.numeric(unlist(sapply(X_speaker, t))))
 }
+```
 
+```{r}
 d <- data.frame(LPC = unlist(X_train_per_speaker), 
                 Speaker = factor(rep(1:9,times = sapply(X_train_per_speaker,length))))
 ggplot(d,aes(x = Speaker, y = LPC)) + geom_boxplot()+theme_bw()
 ```
 
-##Transduction (sequence-to-sequence model) As ReservoirPy Nodes are built to work on sequences, the simplest setup to solve this task is sequence-to-sequence encoding, also called transduction. A model is trained on encoding each vector of input sequence into a new vector in the output space. Thus, a sequence of audio yields a sequence of label, one label per timestep.
+##Transduction (sequence-to-sequence model) 
+
+As ReservoirPy Nodes are built to work on sequences, the simplest setup to solve this task is sequence-to-sequence encoding, also called transduction. A model is trained on encoding each vector of input sequence into a new vector in the output space. Thus, a sequence of audio yields a sequence of label, one label per timestep.
 
 ```{r}
 japanese_vowels <- reservoir::generate_data(
@@ -82,15 +86,14 @@ model <- list(source %>>% reservoir, source) %>>% readout
 
 ```{r}
 model_fit <- fit(node = model,
-                 X = X_train[[1]],
-                 Y = Y_train[[1]],
+                 X = X_train,
+                 Y = Y_train,
                  stateful=FALSE,
                  warmup = 2)
 
 Y_pred <- predict_seq(node = model_fit, 
-                      X = X_test[[1]],
+                      X = X_test,
                       stateful = FALSE)
-Y_pred
 ```
 
 Get the scores:
@@ -103,10 +106,11 @@ accuracy <- function(pred, truth){
 }
 ```
 
+
 ```{r}
 Y_pred_class <- sapply(Y_pred, FUN = function(x) apply(as.matrix(x),1,which.max))
-Y_test_class <- sapply(Y_test[[1]], FUN = function(x) apply(as.matrix(x),1,which.max))
-score <- accuracy(Y_pred_class, Y_test_class)
+Y_test_class <- sapply(Y_test, FUN = function(x) apply(as.matrix(x),1,which.max))
+score <- accuracy(array(unlist(Y_pred_class)), array(unlist(Y_test_class)))
 
 print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
 ```
@@ -128,6 +132,7 @@ X_test <- japanese_vowels$X_test
 Y_test <- japanese_vowels$Y_test
 ```
 
+
 ```{r}
 source <- createNode("Input")
 readout <- createNode("Ridge",ridge=1e-6)
@@ -135,8 +140,6 @@ reservoir <- createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
 
 #source >> reservoir >> readout
 model <- source %>>% reservoir %>>% readout
-
-
 ```
 
 We need to modify the training loop by hand a bit to perform this task:
@@ -148,18 +151,17 @@ states_train = list()
 k <- 1
 for (x in X_train) {
   states <- predict_seq(node = reservoir, X = x, reset=TRUE)
-  states_train[[k]] <- states[[length(states)]]
+  states_train[[k]] <- t(as.matrix(states[nrow(states),]))
   k <- k+1
 }
+
 ```
 
 We can now train the readout only on the last state vectors. Here, Y_train is an array storing a single label for each utterance.
 
 
 ```{r}
-model_fit <- fit(node = readout,
-                 X = states_train,
-                 Y = Y_train)
+fit(readout,X = states_train, Y = Y_train)
 ```
 
 We also modify the inference code using the same method as above:
@@ -167,22 +169,23 @@ We also modify the inference code using the same method as above:
 ```{r}
 Y_pred <- list()
 k <- 1
-for (x in X_train) {
+for (x in X_test) {
   states <- predict_seq(node = reservoir, X = x, reset=TRUE)
-  y <- predict_seq(node = readout, X = states[[length(states)]])
+  y <- predict_seq(node = readout, X = as.array(states[nrow(states),]))
   Y_pred[[k]] <- y
-  k+1
+  k <- k+1
 }
 ```
+
 
 ```{r}
 Y_pred_class <- sapply(Y_pred, FUN = function(x) apply(as.matrix(x),1,which.max))
 Y_test_class <- sapply(Y_test, FUN = function(x) apply(as.matrix(x),1,which.max))
 
-
-
-score <- accuracy(pred = as.factor(unlist(Y_test_class)),
-                       truth = as.factor(unlist(Y_pred_class)))
+score <- accuracy(pred = Y_test_class,
+                       truth = Y_pred_class)
 
 print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
 ```
+
+
