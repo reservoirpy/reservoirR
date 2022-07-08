@@ -49,7 +49,7 @@ createNode <- function(nodeType = c("Ridge"),
                        ...) {
   
   stopifnot(!is.null(nodeType))
-
+  
   if(nodeType == "Ridge"){
     node <- reservoirpy$nodes$Ridge(output_dim = otputDim, 
                                     name = name,
@@ -60,10 +60,10 @@ createNode <- function(nodeType = c("Ridge"),
     if(!is.null(units))
       #units <- noquote(paste0(as.integer(units),'L'))
       node <- reservoirpy$nodes$Reservoir(units = as.integer(units),
-                                        lr = lr,
-                                        sr = sr,
-                                        name = name,
-                                        input_bias = inputBias)
+                                          lr = lr,
+                                          sr = sr,
+                                          name = name,
+                                          input_bias = inputBias)
     else
       node <- reservoirpy$nodes$Reservoir(units = units,
                                           lr = lr,
@@ -146,7 +146,7 @@ predict_seq <- function(node,X,
   pred <- node$run(X, from_state = formState, 
                    stateful = stateful, 
                    reset=reset)
-  return(pred)
+  return(py_to_r(pred))
 }
 
 
@@ -176,10 +176,11 @@ predict_seq <- function(node,X,
 #'@export
 fit <- function(node, X, Y, warmup = 0, stateful=FALSE){
   
-  stopifnot(!is.null(node))
-  stopifnot(!is.null(X) & !is.null(Y))
-  
-  fit <- node$fit(X, Y, warmup = as.integer(warmup), stateful = stateful)
+  stopifnot(!is.null(node) & !is.null(X) & !is.null(Y))
+  if (class(node)[1]=="reservoirpy.model.Model")
+    fit <- node$fit(X, Y, warmup = as.integer(warmup), stateful = stateful)
+  else
+    fit <- node$fit(X, Y, warmup = as.integer(warmup))
   return(py_to_r(fit))
 }
 
@@ -241,15 +242,15 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
   data_generated <- list()
   if(dataset %in% c("japanese_vowels","both")){
     data_generated[["japanese_vowels"]] <- py_to_r(reservoirpy$datasets$japanese_vowels(one_hot_encode=one_hot_encode, 
-                                                                   repeat_targets=repeat_targets,
-                                                                   reload=reload))
+                                                                                        repeat_targets=repeat_targets,
+                                                                                        reload=reload))
     names(data_generated[["japanese_vowels"]]) <- c("X_train", "Y_train", "X_test", "Y_test")
   }
   if(dataset %in% c("mackey_glass","both")){
     stopifnot(!is.null(n_timesteps))
     data_generated[["mackey_glass"]] <- as.vector(reservoirpy$datasets$mackey_glass(as.integer(n_timesteps),
-                                                 as.integer(tau),a,b,
-                                                 as.integer(n),x0,h))
+                                                                                    as.integer(tau),a,b,
+                                                                                    as.integer(n),x0,h))
   }
   return(data_generated)
 }
@@ -284,4 +285,3 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
 `%>>%` <- function(node1, node2){
   rp$rshift$operatorRShift(node1, node2)
 }
-
