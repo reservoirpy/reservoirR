@@ -4,10 +4,12 @@
 \alias{plot.reservoir_predict_seq}
 \title{plot.reservoir_predict_seq}
 \usage{
-\method{plot}{reservoir_predict_seq}(object, vec_nodes = c(1:20), vec_time = NULL)
+\method{plot}{reservoir_predict_seq}(x, ..., vec_nodes = c(1:20), vec_time = NULL)
 }
 \arguments{
-\item{object}{A reservoir_predict_seq object}
+\item{x}{A reservoir_predict_seq object}
+
+\item{...}{deprecated}
 
 \item{vec_nodes}{Number of nodes to plot}
 

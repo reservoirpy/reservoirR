@@ -4,10 +4,12 @@
 \alias{summary.reservoir_predict_seq}
 \title{summary.reservoir_predict_seq}
 \usage{
-\method{summary}{reservoir_predict_seq}(object)
+\method{summary}{reservoir_predict_seq}(object, ...)
 }
 \arguments{
 \item{object}{A reservoir_predict_seq object}
+
+\item{...}{Additional argument (unused)}
 }
 \value{
 A dataframe with node activation

@@ -33,7 +33,8 @@ RoxygenNote: 7.2.0
 Encoding: UTF-8
 Imports:
     reticulate,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    rlang
 Suggests:
     rmarkdown,
     knitr,
