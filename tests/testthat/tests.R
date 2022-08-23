@@ -40,7 +40,6 @@ test_that("reservoir", {
                               warmup = 2)
   
   Y_pred <- reservoir::predict_seq(node = model_fit, X = japanese_vowels$X_test,stateful = FALSE)
-  Y_pred <- py_to_r(Y_pred)
   # formal test
   testthat::expect(class(model)[1] == "reservoirpy.model.Model",
                    failure_message = "Output of fit function is not a reservoirpy.model.Model object")

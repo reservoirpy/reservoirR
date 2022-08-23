@@ -51,8 +51,7 @@ fct_toOptim <- function(vec_hyperparam){
   
   model = reservoir::fit(model, X=Xtrain, Y=Ytrain)
   
-  vecPredictions = reservoir::predict_seq(node = model, X = Xtest) %>%
-    reticulate::py_to_r()
+  vecPredictions = reservoir::predict_seq(node = model, X = Xtest)
   
   mse <- mean((vecPredictions-Ytest)^2)
   
@@ -80,7 +79,6 @@ randomsearch <- function(n = 100, ls_fun_define_space, fct_toOptim){
   return(res)
 }
 ```
-
 
 ```{r results='hide'}
 dfOptim <- randomsearch(n = 100,
@@ -123,8 +121,7 @@ lspred <- lapply(list(baseline = model_baseline,
                       opti = model_opti),
                  FUN = function(model){
                    model = reservoir::fit(model, X=Xtrain, Y=Ytrain)
-                   vecPredictions = reservoir::predict_seq(node = model, X = Xtest) %>%
-                     reticulate::py_to_r()
+                   vecPredictions = reservoir::predict_seq(node = model, X = Xtest)
                    return(vecPredictions)
                  })
 
