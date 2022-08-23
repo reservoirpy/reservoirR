@@ -15,6 +15,9 @@ createNode(
   ridge = 0,
   inputBias = TRUE,
   input_scaling = TRUE,
+  input_connectivity = 0.1,
+  rc_connectivity = 0.1,
+  activation = "tanh",
   dtype = "float64",
   ...
 )
@@ -46,6 +49,12 @@ will be learned along with output weights.}
 \item{input_scaling}{float or array-like of shapes (features), default to \code{1.0}.
 Input gain. An array of the same dimension as the inputs can be used to
 set up different input scaling for each feature.}
+
+\item{input_connectivity}{float, default to 0.1. Connectivity of input neurons, i.e. ratio of input neurons connected to reservoir neurons. Must be between 0 and 1.}
+
+\item{rc_connectivity}{float, default to 0.1. Connectivity of recurrent weight matrix, i.e. ratio of reservoir neurons connected to other reservoir neurons, including themselves. Must be between 0 and 1.}
+
+\item{activation}{str 'tanh'. Reservoir units activation function. Should be a activationsfunc function name ('tanh', 'identity', 'sigmoid', 'relu', 'softmax', 'softplus').}
 
 \item{dtype}{Numerical type for node parameters}
 

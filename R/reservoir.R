@@ -31,6 +31,10 @@
 #'
 #'@param ... Others params
 #'
+#' @param rc_connectivity float, default to 0.1. Connectivity of recurrent weight matrix, i.e. ratio of reservoir neurons connected to other reservoir neurons, including themselves. Must be between 0 and 1. 
+#' @param input_connectivity float, default to 0.1. Connectivity of input neurons, i.e. ratio of input neurons connected to reservoir neurons. Must be between 0 and 1.
+#' @param activation str 'tanh'. Reservoir units activation function. Should be a activationsfunc function name ('tanh', 'identity', 'sigmoid', 'relu', 'softmax', 'softplus').
+#'
 #'@examples
 #' if(interactive()){
 #' readout <- createNode("Ridge")
@@ -50,6 +54,9 @@ createNode <- function(nodeType = c("Ridge"),
                        ridge = 0.0,
                        inputBias = TRUE,
                        input_scaling = TRUE,
+                       input_connectivity = 0.1,
+                       rc_connectivity = 0.1,
+                       activation = "tanh",
                        dtype = "float64",
                        ...) {
   
@@ -69,14 +76,20 @@ createNode <- function(nodeType = c("Ridge"),
                                           sr = sr,
                                           name = name,
                                           input_bias = inputBias,
-                                          input_scaling = input_scaling)
+                                          input_scaling = input_scaling,
+                                          rc_connectivity = rc_connectivity,
+                                          input_connectivity = input_connectivity,
+                                          activation = activation)
     else
       node <- reservoirpy$nodes$Reservoir(units = units,
                                           lr = lr,
                                           sr = sr,
                                           name = name,
                                           input_bias = inputBias,
-                                          input_scaling = input_scaling)
+                                          input_scaling = input_scaling,
+                                          rc_connectivity = rc_connectivity,
+                                          input_connectivity = input_connectivity,
+                                          activation = activation)
   }
   else if(nodeType=="Input"){
     node <- reservoirpy$nodes$Input(input_dim = inputDim,
