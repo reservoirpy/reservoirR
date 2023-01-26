@@ -39,6 +39,3 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 inst/doc
-
-# data file
-dfCovid.rdata
