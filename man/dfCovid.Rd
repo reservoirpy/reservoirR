@@ -3,22 +3,22 @@
 \docType{data}
 \name{dfCovid}
 \alias{dfCovid}
-\title{Bordeaux University Hospital covid-19 dataset}
+\title{Datagouv covid-19 dataset}
 \format{
-A data frame with 612 rows and 4 variables
+A data frame with 962 rows and 4 variables
 }
 \usage{
 data(dfCovid)
 }
 \description{
-A dataset containing the Bordeaux Hospital covid-19 data (obfuscated < 10).
+A dataset containing the data from datagouv.fr concerning covid-19 infections in Aquitaine. Data related to hospitalizations can be found at Santé publique France  - Data downloaded at https://www.data.gouv.fr/fr/datasets/r/08c18e08-6780-452d-9b8c-ae244ad529b3, update from 26/01/2023. Data related to RT-PCR can be found at Santé publique France  - Data downloaded at https://www.data.gouv.fr/fr/datasets/r/10639654-3864-48ac-b024-d772c218c4c1, update from 26/01/2023.
 }
 \details{
 \itemize{
   \item date. The date
-  \item hospitalisations. Number of person hospitalised in Bordeaux Hospital at a given date (obfuscated < 10)
-  \item iptcc. The IPTCC index
-  \item positive_pcr. Number of covid-19 positive RT-PCR in Bordeaux Hospital at a given date (obfuscated < 10)
+  \item hosp. Number of person hospitalized with SARS-CoV-2 in Aquitaine.
+  \item Positive. Number of person with a positive RT-PCR in Aquitaine.
+  \item Tested. Number of person with a RT-PCR in Aquitaine.
 }
 }
 \keyword{datasets}

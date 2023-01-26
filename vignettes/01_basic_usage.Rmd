@@ -1,8 +1,8 @@
 ---
-title: "The basics first, you should learn"
+title: "01 - The basics first, you should learn"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{The basics first, you should learn}
+  %\VignetteIndexEntry{01 - The basics first, you should learn}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -30,20 +30,20 @@ data("dfCovid")
 
 dist_forecast = 14
 
-traintest_date = as.Date("2021-07-01")
+traintest_date = as.Date("2022-01-01")
 ```
 
 # Covid-19 data
 
-Because both iptcc and RT-PCR have strong variations, we will first proceed by taking the moving average on the last 7 days of those features. Also we add an outcome and an outcomeDate colum which will be useful to train the model.
+Because both RT-PCR have strong variations, we will first proceed by taking the moving average on the last 7 days of those features. Also we add an outcome and an outcomeDate colum which will be useful to train the model.
 
 ```{r}
 dfOutcome <- dfCovid %>%
   # outcome at 14 days
-  mutate(outcome = lead(x = hospitalisations, n = dist_forecast),
+  mutate(outcome = lead(x = hosp, n = dist_forecast),
          outcomeDate = date + dist_forecast) %>%
   # rolling average for iptcc and positive_pcr
-  mutate_at(.vars = c("iptcc", "positive_pcr"),
+  mutate_at(.vars = c("Positive", "Tested"),
             .funs = function(x) slider::slide_dbl(.x = x,
                                                   .before = 6,
                                                   .f = mean))
@@ -53,7 +53,7 @@ Now that we have our data ready, we can plot those :
 
 ```{r fig.cap = "Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.", fig.height=6, fig.width=6}
 dfOutcome %>%
-  tidyr::pivot_longer(cols = c("hospitalisations", "iptcc", "positive_pcr")) %>%
+  tidyr::pivot_longer(cols = c("hosp", "Positive", "Tested")) %>%
   ggplot2::ggplot(mapping = aes(x = date, y = value)) +
   geom_line() +
   facet_grid(name ~ ., scales = "free_y") +
@@ -69,16 +69,14 @@ The data looks good, let's start our first reservoir !
 
 Setting a reservoir is easily done with the `createNode()` function. The important hyperparameters are the following :
 
-*to complete*
-
-- Number of nodes
-- Leaking rate
-- Spectral radius
-- Input scaling
+- Number of nodes (units) : it corresponds to the number of nodes inside the reservoir. Usually, the more the better but more nodes increase the computation time. 
+- Leaking rate (lr) : the leaking rate corresponds to the balance between the new inputs and the previous state. A leaking rate of 1 only consider informations from the new inputs.
+- Spectral radius (sr): the spectral radius is the maximum absolute eigenvalue of the reservoir connectivity matrix. A small spectral radius induces stable dynamics inside the reservoir, a high spectral radius induces chaotic regimen inside the reservoir.
+- Input scaling (input_scaling): the input scaling is a gain applied to the input features of the reservoir.
 
 ```{r}
 reservoir <- reservoir::createNode(nodeType = "Reservoir",
-                                   units = 1000,
+                                   units = 500,
                                    lr = 0.7,
                                    sr = 1,
                                    input_scaling = 1)
@@ -87,10 +85,10 @@ reservoir <- reservoir::createNode(nodeType = "Reservoir",
 Then we can feed the data to the reservoir and see the activation depending on time of the reservoir. To do so, we first prepare the data and transform it to an array.
 
 ```{r}
-## select explanatory data of 2020 and transform it to an array
+## select explanatory and transform it to an array
 X <- dfOutcome %>%
-  filter(date < as.Date("2021-01-01")) %>%
-  select(hospitalisations, iptcc, positive_pcr) %>%
+  filter(outcomeDate < traintest_date) %>%
+  select(hosp, Positive, Tested) %>%
   as.matrix() %>%
   as.array()
 ```
@@ -107,10 +105,10 @@ Now we might want to visualise it so we can make a plot of this :
 plot(reservoir_state)
 ```
 
-We see a lot of nodes with a steady state after time 100 and do not move after that. It will be really difficult for the ridge output layer to learn on this node because they present nearly no information. The problem is caused by the different scales of the features, to take this into account, we can scale them between -1 and 1 with the following function :
+We see a lot of nodes with a steady state after time 100 and do not move after that. It will be really difficult for the ridge output layer to learn on this node because they present nearly no information. The problem is caused by the different scales of the features, to take this into account, we can divide by the maximum value :
 
 ```{r}
-stand_minmax <- function(x) return((x - min(x))/(max(x) - min(x))*2-1)
+stand_max <- function(x) return(x/max(x))
 ```
 
 We prepare the scaled data, feed them to the reservoir and plot the node activation.
@@ -118,9 +116,9 @@ We prepare the scaled data, feed them to the reservoir and plot the node activat
 ```{r fig.cap="Node acivation over time. Scaled features", fig.height=5, fig.width=5}
 # scaled features
 Xstand <- dfOutcome %>%
-  filter(date < as.Date("2021-01-01")) %>%
-  select(hospitalisations, iptcc, positive_pcr) %>%
-  mutate_all(.funs = stand_minmax) %>%
+  filter(date < traintest_date) %>%
+  select(hosp, Positive, Tested) %>%
+  mutate_all(.funs = stand_max) %>%
   as.matrix() %>%
   as.array()
 # feed them to the reservoir
@@ -129,18 +127,18 @@ reservoir_state_stand <- predict_seq(node = reservoir, X = Xstand, reset = TRUE)
 plot(reservoir_state_stand)
 ```
 
-Much better !
+The reservoir dynamics now look much better as no node seem to get saturated.
 
 # Forecast
 
-Ok, now, let's use train the ridge layer to make some forecast. We will train the ESN on data before `r traintest_date` and predict on the other data.
+In order to train the reservoir, we should train the last layer which linearly combines the neuron's output.
 
 ## Set the ESN
 
-We define a readout set as a Ridge function :
+First we define this last layer with a ridge penalty of 0.1.
 
 ```{r}
-readout <- reservoir::createNode(nodeType = "Ridge", ridge = 0.01)
+readout <- reservoir::createNode(nodeType = "Ridge", ridge = 0.1)
 ```
 
 And we connect it to the previously defined reservoir :
@@ -149,7 +147,7 @@ And we connect it to the previously defined reservoir :
 model <- reservoir::link(reservoir, readout)
 ```
 
-The model is now ready let's handle the data !
+The model is now ready we must now train the last layer weights.
 
 ## Set the data
 
@@ -157,10 +155,10 @@ First we separate the train set on which we will learn the ridge coefficients an
 
 ```{r}
 # train set
-yTrain <- dfOutcome %>% filter(date <= traintest_date) %>% select(outcome)
-xTrain <- dfOutcome %>% filter(date <= traintest_date) %>% select(hospitalisations, iptcc, positive_pcr)
+yTrain <- dfOutcome %>% filter(outcomeDate <= traintest_date) %>% select(outcome)
+xTrain <- dfOutcome %>% filter(outcomeDate <= traintest_date) %>% select(hosp, Positive, Tested)
 # test set
-xTest <- dfOutcome %>% select(hospitalisations, iptcc, positive_pcr)
+xTest <- dfOutcome %>% select(hosp, Positive, Tested)
 ```
 
 We now standardise with the same formula as seen before. We learn the standardisation on the training set :
@@ -169,7 +167,7 @@ We now standardise with the same formula as seen before. We learn the standardis
 # standardise based on training set values
 ls_fct_stand <- apply(xTrain,
                       MARGIN = 2,
-                      FUN = function(x) function(feature) return((feature - min(x))/(max(x) - min(x))*2-1))
+                      FUN = function(x) function(feature) return(feature/(max(x))))
 ```
 
 And we apply it to both the train and test sets :
@@ -226,4 +224,4 @@ dfOutcome %>%
 
 ```
 
-We can see on the graph that during the learning set, the model forecast is superposed with the observed values which is expected. During the test set, the model recovers the first peak of the summer 2021 but overestimate forecast during the winter 2021-2022. This is probably because of the strong effect of the vaccination and the rising of new variants which are not taken into account here.
+We can see on the graph that during the learning set, the model forecast is superposed with the observed values which is expected. During the test set, the model first fit to the curve but quickly diverge from the observed values. This problem could be limitated by retraining the ridge curve on a weekly or daily basis but we will stop here for this vignette
