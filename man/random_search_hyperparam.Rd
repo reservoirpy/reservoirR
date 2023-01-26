@@ -26,13 +26,18 @@ A dataframe of size n x 4. Each row is a different set of hyperparameters.
 Generate a hyperparameter simulation table using functions as input.
 }
 \examples{
-random_search_hyperparam(n = 100,
-                         ls_fct = list(ridge = function(n) 1e-5,
-                                       input_scaling = function(n) 1,
-                                       spectral_radius = function(n) rloguniform(n = n, min = 1e-2, max = 10),
-                                       leaking_rate = function(n) rloguniform(n = n, min = 1e-3, max = 1),
-                                       input_connectivity= function(n) rloguniform(n = n, min = 1e-2, max = 1),
-                                       rc_connectivity = function(n) rloguniform(n = n, min = 1e-2, max = 1),
-                                       activation = function(n) "tanh")
+random_search_hyperparam(
+  n = 100,
+  ls_fct = list(
+    ridge = function(n)
+      1e-5,
+    input_scaling = function(n)
+      1,
+    spectral_radius = function(n)
+      rloguniform(n = n, min = 1e-2, max = 10),
+    leaking_rate = function(n)
+      rloguniform(n = n, min = 1e-3, max = 1)
+  )
+)
 
 }

@@ -9,6 +9,10 @@
 #'
 #' @return A mutliple 2x2 plots.
 #' @export
+#' @import ggplot2
+#' @importFrom ggpubr ggarrange
+#' @importFrom janitor remove_constant
+#' @importFrom utils combn
 plot_2x2_perf <- function(dfPerf,
                           perf_lab = "Median relative error",
                           legend_position = "bottom",
@@ -18,7 +22,7 @@ plot_2x2_perf <- function(dfPerf,
     janitor::remove_constant()
   
   hp <- colnames(dfPerf)[colnames(dfPerf) != "perf"]
-  mat_comb <- combn(hp , 2 )
+  mat_comb <- utils::combn(hp , 2 )
   
   ls_plot <- apply(mat_comb, 2, function(col_i){
     plot_perf_22(x = col_i[1],
