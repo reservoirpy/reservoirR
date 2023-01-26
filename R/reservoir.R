@@ -23,19 +23,27 @@
 #'@param inputBias bool, default to \code{TRUE}. If \code{TRUE}, then a bias parameter 
 #'will be learned along with output weights.
 #'
+#'@param input_scaling float or array-like of shapes (features), default to \code{1.0}.
+#' Input gain. An array of the same dimension as the inputs can be used to
+#' set up different input scaling for each feature.
+#'
 #'@param dtype Numerical type for node parameters
 #'
 #'@param ... Others params
-#' 
-#'@importFrom reticulate py_to_r
-#'@import testthat
 #'
-#'@export
+#' @param rc_connectivity float, default to 0.1. Connectivity of recurrent weight matrix, i.e. ratio of reservoir neurons connected to other reservoir neurons, including themselves. Must be between 0 and 1. 
+#' @param input_connectivity float, default to 0.1. Connectivity of input neurons, i.e. ratio of input neurons connected to reservoir neurons. Must be between 0 and 1.
+#' @param activation str 'tanh'. Reservoir units activation function. Should be a activationsfunc function name ('tanh', 'identity', 'sigmoid', 'relu', 'softmax', 'softplus').
 #'
 #'@examples
 #' if(interactive()){
 #' readout <- createNode("Ridge")
 #' }
+#' 
+#'@importFrom reticulate py_to_r
+#'@import testthat
+#'
+#'@export
 createNode <- function(nodeType = c("Ridge"), 
                        units = NULL,
                        lr = 1.0,
@@ -45,6 +53,10 @@ createNode <- function(nodeType = c("Ridge"),
                        name = NULL,
                        ridge = 0.0,
                        inputBias = TRUE,
+                       input_scaling = TRUE,
+                       input_connectivity = 0.1,
+                       rc_connectivity = 0.1,
+                       activation = "tanh",
                        dtype = "float64",
                        ...) {
   
@@ -63,13 +75,21 @@ createNode <- function(nodeType = c("Ridge"),
                                           lr = lr,
                                           sr = sr,
                                           name = name,
-                                          input_bias = inputBias)
+                                          input_bias = inputBias,
+                                          input_scaling = input_scaling,
+                                          rc_connectivity = rc_connectivity,
+                                          input_connectivity = input_connectivity,
+                                          activation = activation)
     else
       node <- reservoirpy$nodes$Reservoir(units = units,
                                           lr = lr,
                                           sr = sr,
                                           name = name,
-                                          input_bias = inputBias)
+                                          input_bias = inputBias,
+                                          input_scaling = input_scaling,
+                                          rc_connectivity = rc_connectivity,
+                                          input_connectivity = input_connectivity,
+                                          activation = activation)
   }
   else if(nodeType=="Input"){
     node <- reservoirpy$nodes$Input(input_dim = inputDim,
@@ -146,7 +166,12 @@ predict_seq <- function(node,X,
   pred <- node$run(X, from_state = formState, 
                    stateful = stateful, 
                    reset=reset)
-  return(py_to_r(pred))
+  
+  res <- reticulate::py_to_r(pred)
+  
+  class(res) <- c(class(res), "reservoir_predict_seq")
+  
+  return(res)
 }
 
 
@@ -171,16 +196,25 @@ predict_seq <- function(node,X,
 #'
 #'@param stateful is boolen
 #'
+#'
+#' @param reset is boolean. Should the node status be reset before fitting.
+#'
 #'@importFrom reticulate py_to_r
 #' 
 #'@export
-fit <- function(node, X, Y, warmup = 0, stateful=FALSE){
+fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
   
   stopifnot(!is.null(node) & !is.null(X) & !is.null(Y))
+  
   if (class(node)[1]=="reservoirpy.model.Model")
-    fit <- node$fit(X, Y, warmup = as.integer(warmup), stateful = stateful)
+    fit <- node$fit(X,
+                    Y,
+                    warmup = as.integer(warmup),
+                    stateful = stateful,
+                    reset = reset)
   else
-    fit <- node$fit(X, Y, warmup = as.integer(warmup))
+    fit <- node$fit(X, Y, warmup = as.integer(warmup), reset = reset)
+  
   return(py_to_r(fit))
 }
 
