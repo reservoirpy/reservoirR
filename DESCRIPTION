@@ -46,6 +46,7 @@ Suggests:
     knitr,
     covr,
     kableExtra,
+    slider,
     tibble,
     tidyr
 Config/testthat/edition: 3
