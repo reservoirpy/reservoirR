@@ -62,7 +62,7 @@ jobs:
           reticulate::install_miniconda()
         shell: Rscript {0}
 
-    - name: setup r-reticulate venv
+      - name: setup r-reticulate venv
         shell: Rscript {0}
         run: |
           python_packages <- 
