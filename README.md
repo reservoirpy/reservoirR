@@ -1,7 +1,7 @@
 # reservoiR
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/reservoirpy/reservoirR/workflows/R-CMD-check/badge.svg)](https://github.com/reservoirpy/reservoirR/actions)
+[![R-CMD-check](https://github.com/reservoirpy/reservoirR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/reservoirpy/reservoirR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 reservoiR is an R package designed to call the python module [reservoirpy](https://github.com/reservoirpy)
