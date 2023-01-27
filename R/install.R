@@ -8,5 +8,5 @@
 #' 
 #' @export
 install_reservoirpy <- function(envname='r-reticulate', method='auto') {
-  reticulate::py_install("reservoirpy", envname=envname, method=method, pip=T)
+  reticulate::py_install("reservoirpy", envname=envname, method=method, pip=TRUE)
 }

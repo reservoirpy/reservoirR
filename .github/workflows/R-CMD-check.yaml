@@ -64,7 +64,7 @@ jobs:
 
       - name: Install reservoirpy/reservoir
         run: |
-          reservoir::install_reservoirpy()
+          reticulate::py_install("reservoirpy", envname="'r-reticulate", method="auto", pip=TRUE)
         shell: Rscript {0}
       
       - uses: r-lib/actions/check-r-package@v2
