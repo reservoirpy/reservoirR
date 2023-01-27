@@ -57,15 +57,15 @@ jobs:
 
       - name: Install miniconda
         if: runner.os != 'Windows'
-          run: |
-            Sys.setenv(RETICULATE_MINICONDA_PYTHON_VERSION="3.9")
-            reticulate::install_miniconda()
-          shell: Rscript {0}
+        run: |
+          Sys.setenv(RETICULATE_MINICONDA_PYTHON_VERSION="3.9")
+          reticulate::install_miniconda()
+        shell: Rscript {0}
 
       - name: Install reservoirpy/reservoir
-          run: |
-            reservoir::install_reservoirpy()
-          shell: Rscript {0}
+        run: |
+          reservoir::install_reservoirpy()
+        shell: Rscript {0}
       
       - uses: r-lib/actions/check-r-package@v2
         with:
