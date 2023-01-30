@@ -30,13 +30,7 @@ random_search_hyperparam <- function(n = 100,
                                      ls_fct = list(ridge = function(n) 1e-5,
                                                    input_scaling = function(n) 1,
                                                    spectral_radius = function(n) rloguniform(n = n, min = 1e-2, max = 10),
-                                                   leaking_rate = function(n) rloguniform(n = n, min = 1e-3, max = 1),
-                                                   input_connectivity= function(n) rloguniform(n = n, min = 1e-2, max = 1),
-                                                   rc_connectivity = function(n) rloguniform(n = n, min = 1e-2, max = 1),
-                                                   activation = function(n) sample(x = c("tanh", "identity"),
-                                                                                   replace = TRUE,
-                                                                                   size = n,
-                                                                                   prob = c(.5, .5)))){
+                                                   leaking_rate = function(n) rloguniform(n = n, min = 1e-3, max = 1))){
   
   # check all functions have only the n argument
   bool_n_argument <- lapply(ls_fct,

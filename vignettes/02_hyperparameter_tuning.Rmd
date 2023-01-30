@@ -190,11 +190,11 @@ random_search_hyperparam(
   n = 50,
   ls_fct = list(
     ridge = function(n)
-      PredictCovid::rloguniform(n = n, min = 1e-10, max = 1e-1),
+      rloguniform(n = n, min = 1e-10, max = 1e-1),
     input_scaling = function(n)
       1,
     spectral_radius = function(n)
-      PredictCovid::rloguniform(n = n, min = 1e-10, max = 1e5),
+      rloguniform(n = n, min = 1e-10, max = 1e5),
     leaking_rate = function(n)
       0.9
   )
@@ -212,9 +212,9 @@ For a real case, it would be better to increase the number of experiment and of 
 
 ```{r}
 dfHyperparam <- random_search_hyperparam(n = 30,
-                                                       ls_fct = list(ridge = function(n) PredictCovid::rloguniform(n = n, min = 1e-10, max = 1e-1),
-                                                                     input_scaling = function(n) PredictCovid::rloguniform(n = n, min = 1e-5, max = 1e2),
-                                                                     spectral_radius = function(n) PredictCovid::rloguniform(n = n, min = 1e-5, max = 1e2),
+                                                       ls_fct = list(ridge = function(n) rloguniform(n = n, min = 1e-10, max = 1e-1),
+                                                                     input_scaling = function(n) rloguniform(n = n, min = 1e-5, max = 1e2),
+                                                                     spectral_radius = function(n) rloguniform(n = n, min = 1e-5, max = 1e2),
                                                                      leaking_rate = function(n) 0.7)) %>%
   # replicate 2 times
   replicate(n = 2, simplify = FALSE) %>%
@@ -258,10 +258,10 @@ We can now move on to tune the leaking rate and the ridge hyperparameters.
 
 ```{r}
 dfHyperparam <- random_search_hyperparam(n = 30,
-                                                       ls_fct = list(ridge = function(n) PredictCovid::rloguniform(n = n, min = 1e-10, max = 1e-1),
+                                                       ls_fct = list(ridge = function(n) rloguniform(n = n, min = 1e-10, max = 1e-1),
                                                                      input_scaling = function(n) 1,
                                                                      spectral_radius = function(n) 1,
-                                                                     leaking_rate = function(n) PredictCovid::rloguniform(n = n, min = 1e-3, max = 1))) %>%
+                                                                     leaking_rate = function(n) rloguniform(n = n, min = 1e-3, max = 1))) %>%
   # replicate 2 times
   replicate(n = 2, simplify = FALSE) %>%
   bind_rows() %>%
