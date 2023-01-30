@@ -9,6 +9,7 @@ vignette: >
 
 Reservoir Computing (RC) is well suited to both regression and classification tasks. In the following notebook, you will experiment with a simple example of classification task.
 
+
 ```{r setup}
 library(reservoir)
 library(ggplot2)
@@ -50,6 +51,8 @@ for (i in 0:8) {
 }
 ```
 
+
+
 ```{r}
 d <- data.frame(LPC = unlist(X_train_per_speaker), 
                 Speaker = factor(rep(1:9,times = sapply(X_train_per_speaker,length))))
@@ -85,13 +88,13 @@ model <- list(source %>>% reservoir, source) %>>% readout
 ## Fit the model
 
 ```{r}
-model_fit <- fit(node = model,
-                 X = X_train,
-                 Y = Y_train,
-                 stateful=FALSE,
-                 warmup = 2)
+model_fit <- reservoir::fit(node = model,
+                            X = X_train,
+                            Y = Y_train,
+                            stateful = FALSE,
+                            warmup = 2)
 
-Y_pred <- predict_seq(node = model_fit, 
+Y_pred <- reservoir::predict_seq(node = model_fit,
                       X = X_test,
                       stateful = FALSE)
 ```
@@ -134,9 +137,9 @@ Y_test <- japanese_vowels$Y_test
 
 
 ```{r}
-source <- createNode("Input")
-readout <- createNode("Ridge",ridge=1e-6)
-reservoir <- createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+source <- reservoir::createNode("Input")
+readout <- reservoir::createNode("Ridge",ridge=1e-6)
+reservoir <- reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
 
 #source >> reservoir >> readout
 model <- source %>>% reservoir %>>% readout
@@ -150,7 +153,7 @@ first, we compute all reservoir states over the input sequence using the reservo
 states_train = list()
 k <- 1
 for (x in X_train) {
-  states <- predict_seq(node = reservoir, X = x, reset=TRUE)
+  states <- reservoir::predict_seq(node = reservoir, X = x, reset=TRUE)
   states_train[[k]] <- t(as.matrix(states[nrow(states),]))
   k <- k+1
 }
@@ -161,7 +164,7 @@ We can now train the readout only on the last state vectors. Here, Y_train is an
 
 
 ```{r}
-fit(readout,X = states_train, Y = Y_train)
+reservoir::fit(readout,X = states_train, Y = Y_train)
 ```
 
 We also modify the inference code using the same method as above:
@@ -170,8 +173,8 @@ We also modify the inference code using the same method as above:
 Y_pred <- list()
 k <- 1
 for (x in X_test) {
-  states <- predict_seq(node = reservoir, X = x, reset=TRUE)
-  y <- predict_seq(node = readout, X = as.array(states[nrow(states),]))
+  states <- reservoir::predict_seq(node = reservoir, X = x, reset=TRUE)
+  y <- reservoir::predict_seq(node = readout, X = as.array(states[nrow(states),]))
   Y_pred[[k]] <- y
   k <- k+1
 }

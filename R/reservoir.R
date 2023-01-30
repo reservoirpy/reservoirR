@@ -213,7 +213,7 @@ fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
                     stateful = stateful,
                     reset = reset)
   else
-    fit <- node$fit(X, Y, warmup = as.integer(warmup), reset = reset)
+    fit <- node$fit(X, Y, warmup = as.integer(warmup))
   
   return(py_to_r(fit))
 }
