@@ -26,7 +26,7 @@ summary.reservoirR_fit <- function(object, ...){
 #'
 #'print S3 method for summary.reservoirR_fit object
 #'
-#'@param res	an object of class \code{summary.reservoirR_fit} to print.
+#'@param x	an object of class \code{summary.reservoirR_fit} to print.
 #'@param ... further arguments.
 #'
 #'@return NULL
@@ -34,8 +34,8 @@ summary.reservoirR_fit <- function(object, ...){
 #'@method print summary.reservoirR_fit
 #'@export
 
-print.summary.reservoirR_fit <- function(res, ...){
-  cat("Parametrs using to fit:\n warmup:",res$warmup,"; stateful:", res$stateful, "; reset:",res$reset,"\n")
+print.summary.reservoirR_fit <- function(x, ...){
+  cat("Parametrs using to fit:\n warmup:",x$warmup,"; stateful:", x$stateful, "; reset:",x$reset,"\n")
   cat("results of fitting:\n")
-  print(res$res_fit)
+  print(x$res_fit)
 }

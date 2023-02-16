@@ -4,10 +4,10 @@
 \alias{print.summary.reservoirR_fit}
 \title{reservoirR_fit print summary}
 \usage{
-\method{print}{summary.reservoirR_fit}(res, ...)
+\method{print}{summary.reservoirR_fit}(x, ...)
 }
 \arguments{
-\item{res}{an object of class \code{summary.reservoirR_fit} to print.}
+\item{x}{an object of class \code{summary.reservoirR_fit} to print.}
 
 \item{...}{further arguments.}
 }
