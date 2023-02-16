@@ -6,9 +6,9 @@
 \usage{
 random_search_hyperparam(
   n = 100,
-  ls_fct = list(ridge = function(n) 1e-05, input_scaling = function(n) 1,
-    spectral_radius = function(n) rloguniform(n = n, min = 0.01, max = 10), leaking_rate
-    = function(n) rloguniform(n = n, min = 0.001, max = 1))
+  ls_fct = list(ridge = function(n) 1e-05, input_scaling = function(n) 1, spectral_radius
+    = function(n) rloguniform(n = n, min = 0.01, max = 10), leaking_rate = function(n)
+    rloguniform(n = n, min = 0.001, max = 1))
 )
 }
 \arguments{

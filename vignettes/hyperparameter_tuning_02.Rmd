@@ -163,13 +163,13 @@ fct_performance_period <- function(model,
                  function(x) as.array(as.matrix(x)))
   
   ##### fit reservoir on train set
-  fit <- reservoir::fit(node = model,
-                        X = lsdf$xTrain,
-                        Y = lsdf$yTrain,
-                        warmup = 30,
-                        reset = TRUE)
+  fit <- reservoir::reservoirR_fit(node = model,
+                                   X = lsdf$xTrain,
+                                   Y = lsdf$yTrain,
+                                   warmup = 30,
+                                   reset = TRUE)
   ##### predict with the reservoir
-  vec_pred <- reservoir::predict_seq(node = fit,
+  vec_pred <- reservoir::predict_seq(node = fit$fit,
                                      X = lsdf$xTest,
                                      reset = TRUE)
   dfPredictions <- yTest %>%

@@ -16,7 +16,7 @@ test_that("reservoir", {
   Xtrain <- as.matrix(X[1:2001])
   Ytrain <- as.matrix(X[10:2010])
   
-  model <- reservoir::fit(model, X=Xtrain, Y=Ytrain)
+  model <- reservoir::reservoirR_fit(model, X=Xtrain, Y=Ytrain)
   
   # Classification 
   japanese_vowels <- reservoir::generate_data(
@@ -33,13 +33,13 @@ test_that("reservoir", {
   # Example: [source >> reservoir, source] >> readout
   model <- list(source %>>% reservoir, source) %>>% readout
   
-  model_fit <- reservoir::fit(node = model,
+  model_fit <- reservoir::reservoirR_fit(node = model,
                               X = japanese_vowels$X_train, 
                               Y = japanese_vowels$Y_train, 
                               stateful=FALSE,
                               warmup = 2)
   
-  Y_pred <- reservoir::predict_seq(node = model_fit, X = japanese_vowels$X_test,stateful = FALSE)
+  Y_pred <- reservoir::predict_seq(node = model_fit$fit, X = japanese_vowels$X_test,stateful = FALSE)
   # formal test
   testthat::expect(class(model)[1] == "reservoirpy.model.Model",
                    failure_message = "Output of fit function is not a reservoirpy.model.Model object")

@@ -202,7 +202,7 @@ predict_seq <- function(node,X,
 #'@importFrom reticulate py_to_r
 #' 
 #'@export
-fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
+reservoirR_fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
   
   stopifnot(!is.null(node) & !is.null(X) & !is.null(Y))
   
@@ -214,8 +214,10 @@ fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
                     reset = reset)
   else
     fit <- node$fit(X, Y, warmup = as.integer(warmup))
-  
-  return(py_to_r(fit))
+  res_fit <- list(fit = py_to_r(fit),
+                  params = list("warmup" = warmup, "stateful" = stateful, "reset" = reset)) 
+  class(res_fit) <- "reservoirR_fit"
+  return(res_fit)
 }
 
 

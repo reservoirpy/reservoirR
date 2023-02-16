@@ -201,14 +201,14 @@ Now, the easy part. We are going to train the reservoir with the train set. To d
 
 ```{r}
 ### train the reservoir ridge output
-fit <- reservoir::fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain, warmup = 30, reset = TRUE)
+fit <- reservoir::reservoirR_fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain, warmup = 30, reset = TRUE)
 ```
 
 Now that the ridge layer is trained, we can perform predictions as seen before. We set the parameter `reset` to TRUE in order to clean the reservoir from the data used by the training set.
 
 ```{r}
 ### predict with the reservoir
-vec_pred <- reservoir::predict_seq(node = fit, X = lsdf$xTest, reset = TRUE)
+vec_pred <- reservoir::predict_seq(node = fit$fit, X = lsdf$xTest, reset = TRUE)
 ```
 
 ```{r fig.cap="Forecast", fig.height=4, fig.width=5}

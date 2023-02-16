@@ -88,15 +88,15 @@ model <- list(source %>>% reservoir, source) %>>% readout
 ## Fit the model
 
 ```{r}
-model_fit <- reservoir::fit(node = model,
-                            X = X_train,
-                            Y = Y_train,
-                            stateful = FALSE,
-                            warmup = 2)
+model_fit <- reservoir::reservoirR_fit(node = model,
+                                       X = X_train,
+                                       Y = Y_train,
+                                       stateful = FALSE,
+                                       warmup = 2)
 
-Y_pred <- reservoir::predict_seq(node = model_fit,
-                      X = X_test,
-                      stateful = FALSE)
+Y_pred <- reservoir::predict_seq(node = model_fit$fit,
+                                 X = X_test,
+                                 stateful = FALSE)
 ```
 
 Get the scores:
@@ -164,7 +164,8 @@ We can now train the readout only on the last state vectors. Here, Y_train is an
 
 
 ```{r}
-reservoir::fit(readout,X = states_train, Y = Y_train)
+res <- reservoir::reservoirR_fit(readout,X = states_train, Y = Y_train)
+summary(res)
 ```
 
 We also modify the inference code using the same method as above:
