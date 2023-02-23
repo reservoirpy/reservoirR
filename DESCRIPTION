@@ -4,11 +4,11 @@ Title: Simple and flexible code for Reservoir Computing architectures like Echo 
 Version: 0.1.2
 Date: 2022-05-09
 Authors@R: c(person("Thomas", "Ferte", role = c("aut", "cre", "trl"), email = "thomas.ferte@u-bordeaux.fr"),
-person("Kalidou", "Ba", role = c("aut", "cre", "trl"), email = "kalidou.ba@u-bordeaux.fr"),
-person("Nathan", "Trouvain", role = c("aut"), email = "nathan.trouvin@inria.fr"),
-person("Rodolphe", "Thiebaut", role = c("aut"), email = "rodolphe.thiebaut@u-bordeaux.fr"),
-person("Xavier", "Hinaut", role = c("aut"), email = "xavier.hinaut@inria.fr"),
-person("Boris", "Hejblum", role = c("aut", "trl"), email = "boris.hejblum@u-bordeaux.fr"))
+             person("Kalidou", "Ba", role = c("aut", "trl"), email = "kalidou.ba@u-bordeaux.fr"),
+             person("Nathan", "Trouvain", role = c("aut"), email = "nathan.trouvin@inria.fr"),
+             person("Rodolphe", "Thiebaut", role = c("aut"), email = "rodolphe.thiebaut@u-bordeaux.fr"),
+             person("Xavier", "Hinaut", role = c("aut"), email = "xavier.hinaut@inria.fr"),
+             person("Boris", "Hejblum", role = c("aut", "trl"), email = "boris.hejblum@u-bordeaux.fr"))
 Maintainer: <thomas.ferte@u-bordeaux.fr>
 SystemRequirements: Python (>= 3.7)
 Description: ReservoirR is a simple user-friendly library based on Python scientific
