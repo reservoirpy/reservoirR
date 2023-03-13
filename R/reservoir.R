@@ -342,13 +342,14 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
 #' 
 #' @examples
 #' if(interactive()){
-#'   source <- reservoir::createNode("Input")
-#'   reservoir <- reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+#'   source <- reservoirnet::createNode("Input")
+#'   reservoir <- reservoirnet::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
 #'   source %>>% reservoir
 #' 
-#'   readout <- reservoir::createNode("Ridge")
+#'   readout <- reservoirnet::createNode("Ridge")
 #'   list(source %>>% reservoir, source) %>>% readout
 #' }
 `%>>%` <- function(node1, node2){
-  rp$rshift$operatorRShift(node1, node2)
+  reservoirnet::link(node1, node2)
+  # rp$rshift$operatorRShift(node1, node2)
 }

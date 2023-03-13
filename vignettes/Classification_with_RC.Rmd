@@ -11,7 +11,7 @@ Reservoir Computing (RC) is well suited to both regression and classification ta
 
 
 ```{r setup}
-library(reservoir)
+library(reservoirnet)
 library(ggplot2)
 ```
 
@@ -26,7 +26,7 @@ References M. Kudo, J. Toyama and M. Shimbo. (1999). "Multidimensional Curve Cla
 <https://archive.ics.uci.edu/ml/machine-learning-databases/JapaneseVowels-mld/>
 
 ```{r}
-japanese_vowels <- reservoir::generate_data(
+japanese_vowels <- reservoirnet::generate_data(
     dataset = "japanese_vowels")$japanese_vowels
 
 X_train <- japanese_vowels$X_train
@@ -64,7 +64,7 @@ ggplot(d,aes(x = Speaker, y = LPC)) + geom_boxplot()+theme_bw()
 As ReservoirPy Nodes are built to work on sequences, the simplest setup to solve this task is sequence-to-sequence encoding, also called transduction. A model is trained on encoding each vector of input sequence into a new vector in the output space. Thus, a sequence of audio yields a sequence of label, one label per timestep.
 
 ```{r}
-japanese_vowels <- reservoir::generate_data(
+japanese_vowels <- reservoirnet::generate_data(
     dataset = "japanese_vowels",
     repeat_targets=TRUE)$japanese_vowels
 
@@ -88,13 +88,13 @@ model <- list(source %>>% reservoir, source) %>>% readout
 ## Fit the model
 
 ```{r}
-model_fit <- reservoir::reservoirR_fit(node = model,
+model_fit <- reservoirnet::reservoirR_fit(node = model,
                                        X = X_train,
                                        Y = Y_train,
                                        stateful = FALSE,
                                        warmup = 2)
 
-Y_pred <- reservoir::predict_seq(node = model_fit$fit,
+Y_pred <- reservoirnet::predict_seq(node = model_fit$fit,
                                  X = X_test,
                                  stateful = FALSE)
 ```
@@ -126,7 +126,7 @@ print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
 We can create a more elaborated model where inference is performed only once on the whole input sequence. Indeed, we only need to assign one label to each input sequence. This new setup is known as a sequence-to-vector model, and this is usually the type of model we refer to when talking about classification of sequencial patterns.
 
 ```{r}
-japanese_vowels <- reservoir::generate_data(
+japanese_vowels <- reservoirnet::generate_data(
     dataset = "japanese_vowels")$japanese_vowels
 
 X_train <- japanese_vowels$X_train
@@ -137,9 +137,9 @@ Y_test <- japanese_vowels$Y_test
 
 
 ```{r}
-source <- reservoir::createNode("Input")
-readout <- reservoir::createNode("Ridge",ridge=1e-6)
-reservoir <- reservoir::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+source <- reservoirnet::createNode("Input")
+readout <- reservoirnet::createNode("Ridge",ridge=1e-6)
+reservoir <- reservoirnet::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
 
 #source >> reservoir >> readout
 model <- source %>>% reservoir %>>% readout
@@ -153,7 +153,7 @@ first, we compute all reservoir states over the input sequence using the reservo
 states_train = list()
 k <- 1
 for (x in X_train) {
-  states <- reservoir::predict_seq(node = reservoir, X = x, reset=TRUE)
+  states <- reservoirnet::predict_seq(node = reservoir, X = x, reset=TRUE)
   states_train[[k]] <- t(as.matrix(states[nrow(states),]))
   k <- k+1
 }
@@ -164,7 +164,7 @@ We can now train the readout only on the last state vectors. Here, Y_train is an
 
 
 ```{r}
-res <- reservoir::reservoirR_fit(readout,X = states_train, Y = Y_train)
+res <- reservoirnet::reservoirR_fit(readout,X = states_train, Y = Y_train)
 summary(res)
 ```
 
@@ -174,8 +174,8 @@ We also modify the inference code using the same method as above:
 Y_pred <- list()
 k <- 1
 for (x in X_test) {
-  states <- reservoir::predict_seq(node = reservoir, X = x, reset=TRUE)
-  y <- reservoir::predict_seq(node = readout, X = as.array(states[nrow(states),]))
+  states <- reservoirnet::predict_seq(node = reservoir, X = x, reset=TRUE)
+  y <- reservoirnet::predict_seq(node = readout, X = as.array(states[nrow(states),]))
   Y_pred[[k]] <- y
   k <- k+1
 }

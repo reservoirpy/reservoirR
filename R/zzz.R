@@ -1,13 +1,13 @@
 err_reservoirpy <- function(e) {
   message("Error importing reservoirpy")
   message("Check if reservoirpy is installed")
-  message("Install by reservoir::install_reservoirpy() and reload library")
+  message("Install by reservoirnet::install_reservoirpy() and reload library")
 }
 
 err_np <- function(e) {
   message("Error importing numpy")
   message("Check if numpy is installed")
-  message("Install by reservoir::install_numpy() and reload library")
+  message("Install by reservoirnet::install_numpy() and reload library")
 }
 
 err_rshift <- function(e) {
