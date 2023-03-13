@@ -1,29 +1,27 @@
-Package: reservoir
+Package: reservoirnet
 Type: Package
-Title: Simple and flexible code for Reservoir Computing architectures like Echo State Networks
+Title: Reservoir Computing And Echo State Networks
 Version: 0.1.2
-Date: 2022-05-09
+Date: 2023-03-13
 Authors@R: c(person("Thomas", "Ferte", role = c("aut", "cre", "trl"), email = "thomas.ferte@u-bordeaux.fr"),
              person("Kalidou", "Ba", role = c("aut", "trl"), email = "kalidou.ba@u-bordeaux.fr"),
              person("Nathan", "Trouvain", role = c("aut"), email = "nathan.trouvin@inria.fr"),
              person("Rodolphe", "Thiebaut", role = c("aut"), email = "rodolphe.thiebaut@u-bordeaux.fr"),
              person("Xavier", "Hinaut", role = c("aut"), email = "xavier.hinaut@inria.fr"),
              person("Boris", "Hejblum", role = c("aut", "trl"), email = "boris.hejblum@u-bordeaux.fr"))
-Maintainer: <thomas.ferte@u-bordeaux.fr>
 SystemRequirements: Python (>= 3.7)
-Description: ReservoirR is a simple user-friendly library based on Python scientific
-             modules. It provides a flexible interface to implement efficient Reservoir 
-             Computing (RC) architectures with a particular focus on Echo State Networks (ESN). 
-             Advanced features of ReservoirR allow to improve computation time efficiency on 
-             a simple laptop compared to basic Python implementation, with datasets of any size.
-             Some of its features are: offline and online training, parallel implementation, 
+Description: A simple user-friendly library based on the python module reservoirPy.
+             It provides a flexible interface to implement efficient Reservoir
+             Computing (RC) architectures with a particular focus on Echo State Networks
+             (ESN). Some of its features are: offline and online training, parallel implementation, 
              sparse matrix computation, fast spectral initialization, advanced learning 
              rules (e.g. Intrinsic Plasticity) etc. It also makes possible to easily create 
              complex architectures with multiple reservoirs (e.g. deep reservoirs), readouts, 
              and complex feedback loops. Moreover, graphical tools are included to easily 
-             explore hyperparameters with the help of the hyperopt library. Finally, it includes 
-             several tutorials exploring exotic architectures and examples of scientific papers 
-             reproduction.
+             explore hyperparameters. Finally, it includes several tutorials exploring
+             time series forecasting, classification and hyperparameter tuning. This package was
+             developed in the framework of the University of Bordeaux’s IdEx "Investments
+             for the Future" program / RRI PHDS.
 Config/reticulate:
   list(
     packages = list(
@@ -32,9 +30,9 @@ Config/reticulate:
   )
 License: GPL (>= 3)
 Repository: CRAN
-URL: 
+URL: https://github.com/reservoirpy
 Depends: R (>= 3.6)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Imports:
     reticulate,
