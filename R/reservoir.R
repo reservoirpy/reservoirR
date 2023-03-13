@@ -34,7 +34,8 @@
 #' @param rc_connectivity float, default to 0.1. Connectivity of recurrent weight matrix, i.e. ratio of reservoir neurons connected to other reservoir neurons, including themselves. Must be between 0 and 1. 
 #' @param input_connectivity float, default to 0.1. Connectivity of input neurons, i.e. ratio of input neurons connected to reservoir neurons. Must be between 0 and 1.
 #' @param activation str 'tanh'. Reservoir units activation function. Should be a activationsfunc function name ('tanh', 'identity', 'sigmoid', 'relu', 'softmax', 'softplus').
-#'
+#' @param seed set random seed
+#' 
 #'@examples
 #' if(interactive()){
 #' readout <- createNode("Ridge")
@@ -58,6 +59,7 @@ createNode <- function(nodeType = c("Ridge"),
                        rc_connectivity = 0.1,
                        activation = "tanh",
                        dtype = "float64",
+                       seed = NULL,
                        ...) {
   
   stopifnot(!is.null(nodeType))
@@ -71,25 +73,54 @@ createNode <- function(nodeType = c("Ridge"),
   else if(nodeType=="Reservoir"){
     if(!is.null(units))
       #units <- noquote(paste0(as.integer(units),'L'))
-      node <- reservoirpy$nodes$Reservoir(units = as.integer(units),
-                                          lr = lr,
-                                          sr = sr,
-                                          name = name,
-                                          input_bias = inputBias,
-                                          input_scaling = input_scaling,
-                                          rc_connectivity = rc_connectivity,
-                                          input_connectivity = input_connectivity,
-                                          activation = activation)
+      
+      if(is.null(seed)){
+        node <- reservoirpy$nodes$Reservoir(units = as.integer(units),
+                                            lr = lr,
+                                            sr = sr,
+                                            name = name,
+                                            input_bias = inputBias,
+                                            input_scaling = input_scaling,
+                                            rc_connectivity = rc_connectivity,
+                                            input_connectivity = input_connectivity,
+                                            activation = activation)
+      } else {
+        node <- reservoirpy$nodes$Reservoir(units = as.integer(units),
+                                            lr = lr,
+                                            sr = sr,
+                                            name = name,
+                                            input_bias = inputBias,
+                                            input_scaling = input_scaling,
+                                            rc_connectivity = rc_connectivity,
+                                            input_connectivity = input_connectivity,
+                                            activation = activation,
+                                            seed = as.integer(seed))
+      }
     else
-      node <- reservoirpy$nodes$Reservoir(units = units,
-                                          lr = lr,
-                                          sr = sr,
-                                          name = name,
-                                          input_bias = inputBias,
-                                          input_scaling = input_scaling,
-                                          rc_connectivity = rc_connectivity,
-                                          input_connectivity = input_connectivity,
-                                          activation = activation)
+      if(is.null(seed)){
+        node <- reservoirpy$nodes$Reservoir(units = units,
+                                            lr = lr,
+                                            sr = sr,
+                                            name = name,
+                                            input_bias = inputBias,
+                                            input_scaling = input_scaling,
+                                            rc_connectivity = rc_connectivity,
+                                            input_connectivity = input_connectivity,
+                                            activation = activation)  
+      } else {
+        node <- reservoirpy$nodes$Reservoir(units = units,
+                                            lr = lr,
+                                            sr = sr,
+                                            name = name,
+                                            input_bias = inputBias,
+                                            input_scaling = input_scaling,
+                                            rc_connectivity = rc_connectivity,
+                                            input_connectivity = input_connectivity,
+                                            activation = activation,
+                                            seed = as.integer(seed))
+      }
+      
+      
   }
   else if(nodeType=="Input"){
     node <- reservoirpy$nodes$Input(input_dim = inputDim,
