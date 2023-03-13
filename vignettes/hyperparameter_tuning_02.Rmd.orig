@@ -7,10 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
+set.seed(1)
+```
 
-
-```r
+```{r packages}
 library(reservoirnet)
 library(dplyr)
 library(ggplot2)
@@ -25,8 +28,7 @@ This vignette aims to find the best hyperparameters using randomsearch strategy.
 
 We first load the data :
 
-
-```r
+```{r}
 data("dfCovid")
 
 dist_forecast = 14
@@ -36,8 +38,7 @@ traintest_date = as.Date("2022-01-01")
 
 Then we smooth the data to avoid huge variability of RT-PCR :
 
-
-```r
+```{r}
 dfOutcome <- dfCovid %>%
   # outcome at 14 days
   mutate(outcome = lead(x = hosp, n = dist_forecast),
@@ -51,8 +52,7 @@ dfOutcome <- dfCovid %>%
 
 Now that we have our data ready, we can plot those :
 
-
-```r
+```{r figdeschospitiptccpcr, fig.cap = "Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.", fig.height=6, fig.width=6}
 dfOutcome %>%
   tidyr::pivot_longer(cols = c("hosp", "Positive", "Tested")) %>%
   ggplot2::ggplot(mapping = aes(x = date, y = value)) +
@@ -64,8 +64,6 @@ dfOutcome %>%
   theme(legend.position = "bottom")
 ```
 
-![Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.](figdeschospitiptccpcr-1.png)
-
 # Chose the hyperparameters using random search (setting)
 
 In order to chose the best set of hyperparameters (leaking rate, input scaling, spectral radius and ridge penalty) on the train set we are going to use an accumulate forward procedure. Basically, during the year 2021, we are going to train the model each 6 months and evaluate the forecast on the next 3 months. This procedure will be repeated several times with different sets of hyperparameters each time.
@@ -74,8 +72,7 @@ In order to chose the best set of hyperparameters (leaking rate, input scaling, 
 
 First we set the periods of training and evaluation :
 
-
-```r
+```{r}
 # dates of training
 vec_train_sets <- as.Date(c("2021-01-01", "2021-06-01"))
 # dates of evaluation
@@ -89,8 +86,7 @@ dfaccumulateForward = data.frame(train_date = vec_train_sets,
 
 Then we set the objective functions computing the mse for the chosen of hyperparameters :
 
-
-```r
+```{r}
 fct_objective <- function(ridge,
                           leaking_rate,
                           input_scaling,
@@ -130,8 +126,7 @@ fct_objective <- function(ridge,
 }
 ```
 
-
-```r
+```{r}
 fct_performance_period <- function(model,
                                    train_date,
                                    test_start,
@@ -190,8 +185,7 @@ fct_performance_period <- function(model,
 
 To generate the hyperparameters we use log-uniform generations. This is easily done using the rloguniform and random_search_hyperparam functions. For instance we have :
 
-
-```r
+```{r}
 random_search_hyperparam(
   n = 50,
   ls_fct = list(
@@ -208,18 +202,6 @@ random_search_hyperparam(
   head()
 ```
 
-```
-## # A tibble: 6 × 5
-##   search_id         ridge input_scaling spectral_radius leaking_rate
-##       <int>         <dbl>         <dbl>           <dbl>        <dbl>
-## 1         1 0.0000000245              1         1.46e-3          0.9
-## 2         2 0.000000223               1         8.28e+2          0.9
-## 3         3 0.0000143                 1         3.73e-4          0.9
-## 4         4 0.0149                    1         4.70e-7          0.9
-## 5         5 0.00000000653             1         1.15e-9          0.9
-## 6         6 0.0122                    1         3.10e-9          0.9
-```
-
 # Chose the hyperparameters using random search (results)
 
 To find the right set of hyperparameters, we will keep the ridge hyperparameter random between 1e-10 and 1e-1 and vary other hyperparameters 2 by 2. For each set of hyperparameters, we will run 2 experiment and take the mean mse of the 2. At each step we will run 30 experiments to reduce computation time.
@@ -228,8 +210,7 @@ For a real case, it would be better to increase the number of experiment and of 
 
 ## Spectral radius and input scaling
 
-
-```r
+```{r}
 dfHyperparam <- random_search_hyperparam(n = 30,
                                                        ls_fct = list(ridge = function(n) rloguniform(n = n, min = 1e-10, max = 1e-1),
                                                                      input_scaling = function(n) rloguniform(n = n, min = 1e-5, max = 1e2),
@@ -261,20 +242,13 @@ dfPerf = dfHyperparam %>%
 
 We can now plot the performance using the adequate functions :
 
-
-```r
+```{r plotperf1}
 plot_2x2_perf(dfPerf %>% select(perf = mse, spectral_radius, input_scaling),
               perf_lab = "MSE", trans = "identity")
-```
 
-![plot of chunk plotperf1](plotperf1-1.png)
-
-```r
 plot_marginal_perf(dfPerf %>% select(perf = mse, spectral_radius, input_scaling),
               perf_lab = "MSE")
 ```
-
-![plot of chunk plotperf1](plotperf1-2.png)
 
 There is no clear area of better performance and for a real world application, we should probably increase the number of explored hyperparameter set. Nevertheless, the area where spectral radius and input scaling are equal to 1 seems to have better performance.
 
@@ -282,8 +256,7 @@ We can now move on to tune the leaking rate and the ridge hyperparameters.
 
 ## Leaking rate and Ridge
 
-
-```r
+```{r}
 dfHyperparam <- random_search_hyperparam(n = 30,
                                                        ls_fct = list(ridge = function(n) rloguniform(n = n, min = 1e-10, max = 1e-1),
                                                                      input_scaling = function(n) 1,
@@ -315,20 +288,13 @@ dfPerf = dfHyperparam %>%
 
 We can now plot the performance using the adequate functions :
 
-
-```r
+```{r plotperf2}
 plot_2x2_perf(dfPerf %>% select(perf = mse, leaking_rate, ridge),
               perf_lab = "MSE", trans = "identity")
-```
 
-![plot of chunk plotperf2](plotperf2-1.png)
-
-```r
 plot_marginal_perf(dfPerf %>% select(perf = mse, leaking_rate, ridge),
               perf_lab = "MSE")
 ```
-
-![plot of chunk plotperf2](plotperf2-2.png)
 
 Again, for a real world application, we should probably explore a larger set of hyperparameter. Here, we can consider that a leaking rate of 0.5 and a ridge penalty of 1e-3 seem to provide overall best performance. A finer tuning could be done but we stop here for this vignette using random search to find the best set of hyperparameters.
 

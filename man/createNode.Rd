@@ -19,6 +19,7 @@ createNode(
   rc_connectivity = 0.1,
   activation = "tanh",
   dtype = "float64",
+  seed = NULL,
   ...
 )
 }
@@ -57,6 +58,8 @@ set up different input scaling for each feature.}
 \item{activation}{str 'tanh'. Reservoir units activation function. Should be a activationsfunc function name ('tanh', 'identity', 'sigmoid', 'relu', 'softmax', 'softplus').}
 
 \item{dtype}{Numerical type for node parameters}
+
+\item{seed}{set random seed}
 
 \item{...}{Others params}
 }
