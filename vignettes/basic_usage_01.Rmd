@@ -63,7 +63,7 @@ dfOutcome %>%
   theme(legend.position = "bottom")
 ```
 
-![Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.](figure/figdeschospitpcr-1.png)
+![Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.](figdeschospitpcr-1.png)
 
 The data looks good, let's start our first reservoir !
 
@@ -112,7 +112,7 @@ Now we might want to visualise it so we can make a plot of this :
 plot(reservoir_state)
 ```
 
-![Node acivation over time.](figure/nodeactivation-1.png)
+![Node acivation over time.](nodeactivation-1.png)
 
 We see a lot of nodes with a steady state after time 100 and do not move after that. It will be really difficult for the ridge output layer to learn on this node because they present nearly no information. The problem is caused by the different scales of the features, to take this into account, we can divide by the maximum value :
 
@@ -138,7 +138,7 @@ reservoir_state_stand <- predict_seq(node = reservoir, X = Xstand, reset = TRUE)
 plot(reservoir_state_stand)
 ```
 
-![Node acivation over time. Scaled features](figure/nodeactivationscaled-1.png)
+![Node acivation over time. Scaled features](nodeactivationscaled-1.png)
 
 The reservoir dynamics now look much better as no node seem to get saturated.
 
@@ -245,6 +245,6 @@ dfOutcome %>%
   labs(color = "", x = "Date", y = "Hospitalisations")
 ```
 
-![Forecast](figure/forecast-1.png)
+![Forecast](forecast-1.png)
 
 We can see on the graph that during the learning set, the model forecast is superposed with the observed values which is expected. During the test set, the model first fit to the curve but quickly diverge from the observed values. This problem could be limitated by retraining the ridge curve on a weekly or daily basis but we will stop here for this vignette

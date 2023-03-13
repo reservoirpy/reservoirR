@@ -63,7 +63,7 @@ d <- data.frame(LPC = unlist(X_train_per_speaker),
 ggplot(d,aes(x = Speaker, y = LPC)) + geom_boxplot()+theme_bw()
 ```
 
-![plot of chunk boxplotvowel](figure/boxplotvowel-1.png)
+![plot of chunk boxplotvowel](boxplotvowel-1.png)
 
 ##Transduction (sequence-to-sequence model) 
 

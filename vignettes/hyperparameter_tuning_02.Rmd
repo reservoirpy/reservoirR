@@ -64,7 +64,7 @@ dfOutcome %>%
   theme(legend.position = "bottom")
 ```
 
-![Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.](figure/figdeschospitiptccpcr-1.png)
+![Hospitalisations, IPTCC and positive PCR of Bordeaux University Hospital.](figdeschospitiptccpcr-1.png)
 
 # Chose the hyperparameters using random search (setting)
 
@@ -267,14 +267,14 @@ plot_2x2_perf(dfPerf %>% select(perf = mse, spectral_radius, input_scaling),
               perf_lab = "MSE", trans = "identity")
 ```
 
-![plot of chunk plotperf1](figure/plotperf1-1.png)
+![plot of chunk plotperf1](plotperf1-1.png)
 
 ```r
 plot_marginal_perf(dfPerf %>% select(perf = mse, spectral_radius, input_scaling),
               perf_lab = "MSE")
 ```
 
-![plot of chunk plotperf1](figure/plotperf1-2.png)
+![plot of chunk plotperf1](plotperf1-2.png)
 
 There is no clear area of better performance and for a real world application, we should probably increase the number of explored hyperparameter set. Nevertheless, the area where spectral radius and input scaling are equal to 1 seems to have better performance.
 
@@ -321,14 +321,14 @@ plot_2x2_perf(dfPerf %>% select(perf = mse, leaking_rate, ridge),
               perf_lab = "MSE", trans = "identity")
 ```
 
-![plot of chunk plotperf2](figure/plotperf2-1.png)
+![plot of chunk plotperf2](plotperf2-1.png)
 
 ```r
 plot_marginal_perf(dfPerf %>% select(perf = mse, leaking_rate, ridge),
               perf_lab = "MSE")
 ```
 
-![plot of chunk plotperf2](figure/plotperf2-2.png)
+![plot of chunk plotperf2](plotperf2-2.png)
 
 Again, for a real world application, we should probably explore a larger set of hyperparameter. Here, we can consider that a leaking rate of 0.5 and a ridge penalty of 1e-3 seem to provide overall best performance. A finer tuning could be done but we stop here for this vignette using random search to find the best set of hyperparameters.
 
