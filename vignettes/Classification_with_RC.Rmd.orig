@@ -10,8 +10,7 @@ vignette: >
 Reservoir Computing (RC) is well suited to both regression and classification tasks. In the following notebook, you will experiment with a simple example of classification task.
 
 
-
-```r
+```{r setup}
 library(reservoirnet)
 library(ggplot2)
 ```
@@ -26,8 +25,7 @@ References M. Kudo, J. Toyama and M. Shimbo. (1999). "Multidimensional Curve Cla
 
 <https://archive.ics.uci.edu/ml/machine-learning-databases/JapaneseVowels-mld/>
 
-
-```r
+```{r}
 japanese_vowels <- reservoirnet::generate_data(
     dataset = "japanese_vowels")$japanese_vowels
 
@@ -41,8 +39,7 @@ Y_test <- japanese_vowels$Y_test
 
 First we will define a reservoir network :
 
-
-```r
+```{r}
 sample_per_speaker <- 30
 n_speaker <- 9
 X_train_per_speaker <- list()
@@ -56,21 +53,17 @@ for (i in 0:8) {
 
 
 
-
-```r
+```{r boxplotvowel}
 d <- data.frame(LPC = unlist(X_train_per_speaker), 
                 Speaker = factor(rep(1:9,times = sapply(X_train_per_speaker,length))))
 ggplot(d,aes(x = Speaker, y = LPC)) + geom_boxplot()+theme_bw()
 ```
 
-![plot of chunk boxplotvowel](figure/boxplotvowel-1.png)
-
 ##Transduction (sequence-to-sequence model) 
 
 As ReservoirPy Nodes are built to work on sequences, the simplest setup to solve this task is sequence-to-sequence encoding, also called transduction. A model is trained on encoding each vector of input sequence into a new vector in the output space. Thus, a sequence of audio yields a sequence of label, one label per timestep.
 
-
-```r
+```{r}
 japanese_vowels <- reservoirnet::generate_data(
     dataset = "japanese_vowels",
     repeat_targets=TRUE)$japanese_vowels
@@ -83,8 +76,7 @@ Y_test <- japanese_vowels$Y_test
 
 ## Train a simple Echo State Network to solve this task:
 
-
-```r
+```{r}
 source <- createNode("Input")
 readout <- createNode("Ridge",ridge=1e-6)
 reservoir <- createNode("Reservoir",units = 500,lr=0.1, sr=0.9)
@@ -95,8 +87,7 @@ model <- list(source %>>% reservoir, source) %>>% readout
 
 ## Fit the model
 
-
-```r
+```{r}
 model_fit <- reservoirnet::reservoirR_fit(node = model,
                                        X = X_train,
                                        Y = Y_train,
@@ -112,25 +103,19 @@ Get the scores:
 
 There are 9 speakers, hence the output space is 9-dimensional. The speaker label is the index of the output neuron with maximum activation.
 
-
-```r
+```{r}
 accuracy <- function(pred, truth){
   mean(pred == truth)
 }
 ```
 
 
-
-```r
+```{r}
 Y_pred_class <- sapply(Y_pred, FUN = function(x) apply(as.matrix(x),1,which.max))
 Y_test_class <- sapply(Y_test, FUN = function(x) apply(as.matrix(x),1,which.max))
 score <- accuracy(array(unlist(Y_pred_class)), array(unlist(Y_test_class)))
 
 print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
-```
-
-```
-## [1] "Accuracy: 91.296%"
 ```
 
 
@@ -140,8 +125,7 @@ print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
 
 We can create a more elaborated model where inference is performed only once on the whole input sequence. Indeed, we only need to assign one label to each input sequence. This new setup is known as a sequence-to-vector model, and this is usually the type of model we refer to when talking about classification of sequencial patterns.
 
-
-```r
+```{r}
 japanese_vowels <- reservoirnet::generate_data(
     dataset = "japanese_vowels")$japanese_vowels
 
@@ -152,8 +136,7 @@ Y_test <- japanese_vowels$Y_test
 ```
 
 
-
-```r
+```{r}
 source <- reservoirnet::createNode("Input")
 readout <- reservoirnet::createNode("Ridge",ridge=1e-6)
 reservoir <- reservoirnet::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
@@ -166,8 +149,7 @@ We need to modify the training loop by hand a bit to perform this task:
 
 first, we compute all reservoir states over the input sequence using the reservoir.run method. then, we gather in a list only the last vector of the states sequence.
 
-
-```r
+```{r}
 states_train = list()
 k <- 1
 for (x in X_train) {
@@ -175,28 +157,20 @@ for (x in X_train) {
   states_train[[k]] <- t(as.matrix(states[nrow(states),]))
   k <- k+1
 }
+
 ```
 
 We can now train the readout only on the last state vectors. Here, Y_train is an array storing a single label for each utterance.
 
 
-
-```r
+```{r}
 res <- reservoirnet::reservoirR_fit(readout,X = states_train, Y = Y_train)
 summary(res)
 ```
 
-```
-## Parametrs using to fit:
-##  warmup: 0 ; stateful: FALSE ; reset: FALSE 
-## results of fitting:
-## 'Ridge-5': Ridge(ridge=1e-06, input_bias=True, in=500, out=9)
-```
-
 We also modify the inference code using the same method as above:
 
-
-```r
+```{r}
 Y_pred <- list()
 k <- 1
 for (x in X_test) {
@@ -208,8 +182,7 @@ for (x in X_test) {
 ```
 
 
-
-```r
+```{r}
 Y_pred_class <- sapply(Y_pred, FUN = function(x) apply(as.matrix(x),1,which.max))
 Y_test_class <- sapply(Y_test, FUN = function(x) apply(as.matrix(x),1,which.max))
 
@@ -217,10 +190,6 @@ score <- accuracy(pred = Y_test_class,
                        truth = Y_pred_class)
 
 print(paste0("Accuracy: ", round(score * 100,3) ,"%"))
-```
-
-```
-## [1] "Accuracy: 88.108%"
 ```
 
 
