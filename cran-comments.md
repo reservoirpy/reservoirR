@@ -21,9 +21,11 @@ Possibly misspelled words in DESCRIPTION:
   RRI (24:40)
   reservoirPy (13:72)
 
+* checking HTML version of manual ... NOTE
+Skipping checking HTML validation: no command 'tidy' found
+
 * checking for detritus in the temp directory ... NOTE
-Found the following files/directories:
-  'lastMiKTeXException'
+  Found the following files/directories:
+    'lastMiKTeXException'
 
-We believe the note is ok. The words are well spelled. The detritus temp directory does not seem to be a problem (https://stackoverflow.com/questions/62456137/r-cran-check-detritus-in-temp-directory).
-
+We believe the note is ok. The words are well spelled. The command 'tidy' note does not seem to be a problem (https://stackoverflow.com/questions/74857062/rhub-cran-check-keeps-giving-html-note-on-fedora-test-no-command-tidy-found). The detritus temp directory does not seem to be a problem (https://stackoverflow.com/questions/62456137/r-cran-check-detritus-in-temp-directory). 
