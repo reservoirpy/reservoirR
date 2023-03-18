@@ -10,6 +10,17 @@
 #' @export
 #' @importFrom dplyr arrange mutate
 #' @importFrom magrittr %>%
+#' 
+#' @examples 
+#' dfPerf <-
+#' data.frame(
+#'   perf = runif(n = 10),
+#'   ridge = runif(n = 10),
+#'   input_scaling = runif(n = 10),
+#'   leaking_rate = runif(n = 10)
+#' )
+#' reservoirnet::plot_marginal_perf(dfPerf = dfPerf, color_cut = 2)
+#' 
 plot_marginal_perf <- function(dfPerf,
                                color_cut = 10,
                                perf_lab = "Median relative error"){

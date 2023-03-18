@@ -35,3 +35,8 @@ model.
 \description{
 Offline fitting method of a Node
 }
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+}
+
+}

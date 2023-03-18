@@ -29,3 +29,16 @@ created model. This is similar to a function composition operation:
 \details{
 Can update the state of the node several times
 }
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+                                      seed = 1,
+                                      units = 500,
+                                      lr = 0.7,
+                                      sr = 1,
+                                      input_scaling = 1)
+readout <- reservoirnet::createNode(nodeType = "Ridge", ridge = 0.1)
+model <- reservoirnet::link(reservoir, readout)
+}
+
+}

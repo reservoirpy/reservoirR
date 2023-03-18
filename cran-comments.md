@@ -72,17 +72,19 @@ Missing Rd-tags:
 Please add small executable examples in your Rd-files to illustrate the
 use of the exported function but also enable automatic testing.
 
-=> TODO
+=> An example was added below each function. Examples depending on python module reservoirpy are run conditionally.
 
 Please do not modify the global environment (e.g. by using <<-) in your
 functions. This is not allowed by the CRAN policies.
 e.g.: R/zzz.R
 
-=> TODO
+=> TODO https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
+
+It is the same strategy used by the package autokeras for instance (see: https://github.com/r-tensorflow/autokeras/blob/master/R/package.R)
 
 Please do not install packages in your functions, examples or vignette.
 This can make the functions,examples and cran-check very slow. e.g.:
 R/install.R
 
-=> TODO
+=> TODO It is the same strategy used by tensorflow package (https://github.com/rstudio/tensorflow/blob/main/R/install.R)
 

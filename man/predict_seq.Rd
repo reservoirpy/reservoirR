@@ -33,3 +33,19 @@ Run the node-forward function on a sequence of data
 \details{
 Can update the state of the node several times
 }
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+                                      seed = 1,
+                                      units = 500,
+                                      lr = 0.7,
+                                      sr = 1,
+                                      input_scaling = 1)
+X <- matrix(data = rnorm(100), ncol = 4)
+reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
+plot(reservoir_state_stand)
+summary(reservoir_state_stand)
+}
+
+
+}

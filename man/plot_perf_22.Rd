@@ -23,3 +23,19 @@ A 2x2 plot
 \description{
 Unit plot for 2x2 function
 }
+\examples{
+dfPerf <-
+data.frame(
+  perf = runif(n = 10),
+  ridge = runif(n = 10),
+  input_scaling = runif(n = 10),
+  leaking_rate = runif(n = 10)
+)
+reservoirnet::plot_perf_22(
+  dfPerf = dfPerf,
+  x = "ridge",
+  y = "input_scaling",
+  perf_lab = "MSE"
+)
+
+}

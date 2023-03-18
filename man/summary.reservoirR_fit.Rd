@@ -17,3 +17,8 @@ a \code{list} object
 \description{
 summary S3 method for reservoirR_fit object
 }
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+}
+
+}

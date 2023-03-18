@@ -71,7 +71,7 @@ Function to create some node
 }
 \examples{
 if(interactive()){
-readout <- createNode("Ridge")
+readout <- reservoirnet::createNode("Ridge")
 }
 
 }

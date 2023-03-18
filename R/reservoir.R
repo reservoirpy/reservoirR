@@ -38,7 +38,7 @@
 #' 
 #'@examples
 #' if(interactive()){
-#' readout <- createNode("Ridge")
+#' readout <- reservoirnet::createNode("Ridge")
 #' }
 #' 
 #'@importFrom reticulate py_to_r
@@ -160,6 +160,18 @@ createNode <- function(nodeType = c("Ridge"),
 #' 
 #'@export
 #'
+#'@examples
+#' if(reticulate::py_module_available("reservoirpy")){
+#' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+#'                                       seed = 1,
+#'                                       units = 500,
+#'                                       lr = 0.7,
+#'                                       sr = 1,
+#'                                       input_scaling = 1)
+#' readout <- reservoirnet::createNode(nodeType = "Ridge", ridge = 0.1)
+#' model <- reservoirnet::link(reservoir, readout)
+#' }
+#'
 link <- function(node1, node2, name = NULL){
   
   stopifnot(!is.null(node1) & !is.null(node2))
@@ -195,6 +207,22 @@ link <- function(node1, node2, name = NULL){
 #'
 #'
 #'@export
+#'
+#'@examples
+#' if(reticulate::py_module_available("reservoirpy")){
+#' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+#'                                       seed = 1,
+#'                                       units = 500,
+#'                                       lr = 0.7,
+#'                                       sr = 1,
+#'                                       input_scaling = 1)
+#' X <- matrix(data = rnorm(100), ncol = 4)
+#' reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
+#' plot(reservoir_state_stand)
+#' summary(reservoir_state_stand)
+#' }
+#'
+#'
 predict_seq <- function(node,X,
                         formState = NULL,
                         stateful = TRUE,
@@ -246,6 +274,26 @@ predict_seq <- function(node,X,
 #' model.
 #' 
 #'@export
+#'
+#'@examples
+#' if(reticulate::py_module_available("reservoirpy")){
+# reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+#                                       seed = 1,
+#                                       units = 500,
+#                                       lr = 0.7,
+#                                       sr = 1,
+#                                       input_scaling = 1)
+# ridge <- reservoirnet::createNode(nodeType = "Ridge", ridge = 0.01)
+# model <- reservoirnet::link(node1 = reservoir, node2 = ridge)
+# X <- matrix(data = rnorm(100), ncol = 4)
+# Y <- as.matrix(X[,1] + 2*X[,2])
+# fitted_model <- reservoirnet::reservoirR_fit(node = model, X = X, Y = Y)
+# vec_pred <- reservoirnet::predict_seq(node = fitted_model$fit, X = X, reset = TRUE)
+# plot(x = as.numeric(vec_pred), y = as.numeric(Y))
+# summary(fitted_model)
+# print(fitted_model)
+#' }
+#'
 reservoirR_fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
   
   stopifnot(!is.null(node) & !is.null(X) & !is.null(Y))

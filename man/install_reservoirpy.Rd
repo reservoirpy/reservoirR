@@ -18,3 +18,9 @@ A NULL object after installing reservoirpy python module.
 \description{
 Install reservoirpy
 }
+\examples{
+\dontrun{
+reservoirnet::install_reservoirpy()
+}
+
+}

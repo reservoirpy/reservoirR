@@ -18,3 +18,8 @@ fit.
 \description{
 print S3 method for summary.reservoirR_fit object
 }
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+}
+
+}
