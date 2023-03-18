@@ -28,6 +28,10 @@ discard at the begining of each timeseries before training.}
 
 \item{reset}{is boolean. Should the node status be reset before fitting.}
 }
+\value{
+A fitted reservoir of class reservoiR_fit containing the fitted
+model.
+}
 \description{
 Offline fitting method of a Node
 }

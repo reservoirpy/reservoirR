@@ -6,6 +6,8 @@
 #' 
 #' @importFrom reticulate py_install
 #' 
+#' @return A NULL object after installing reservoirpy python module.
+#' 
 #' @export
 install_reservoirpy <- function(envname='r-reticulate', method='auto') {
   reticulate::py_install("reservoirpy", envname=envname, method=method, pip=TRUE)

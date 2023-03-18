@@ -18,6 +18,9 @@ Nodes or lists of nodes to link.}
 \item{name}{(str) optional
 Name for the chaining Model.}
 }
+\value{
+A reservoir model linking node1 and node2.
+}
 \description{
 Link two :py:class:\code{~.Node} instances to form a :py:class:\code{~.Model}
 instance. \code{node1} output will be used as input for \code{node2} in the

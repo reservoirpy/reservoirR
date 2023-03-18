@@ -29,13 +29,15 @@ summary.reservoirR_fit <- function(object, ...){
 #'@param x	an object of class \code{summary.reservoirR_fit} to print.
 #'@param ... further arguments.
 #'
-#'@return NULL
+#'@return A NULL object which shows the model setting to perform the reservoir
+#' fit.
 #'
 #'@method print summary.reservoirR_fit
 #'@export
 
 print.summary.reservoirR_fit <- function(x, ...){
-  cat("Parametrs using to fit:\n warmup:",x$warmup,"; stateful:", x$stateful, "; reset:",x$reset,"\n")
+  cat("Parameters using to fit:\n warmup:",x$warmup,"; stateful:", x$stateful, "; reset:",x$reset,"\n")
   cat("results of fitting:\n")
   print(x$res_fit)
+  return(NULL)
 }

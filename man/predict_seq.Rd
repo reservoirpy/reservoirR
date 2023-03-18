@@ -21,6 +21,12 @@ If True, Node state will be updated by this operation.}
 \item{reset}{\code{bool}, default to \code{FALSE}
 If True, Node state will be reset to zero before this operation.}
 }
+\value{
+An object of class reservoir_predict_seq. This object is a numeric
+vector containing the matrix of the prediction of the reservoir. It is either
+the forecast of the ridge layer or the node state of the reservoir if no
+ridge layer is given.
+}
 \description{
 Run the node-forward function on a sequence of data
 }

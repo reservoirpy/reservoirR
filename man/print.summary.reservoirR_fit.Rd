@@ -11,6 +11,10 @@
 
 \item{...}{further arguments.}
 }
+\value{
+A NULL object which shows the model setting to perform the reservoir
+fit.
+}
 \description{
 print S3 method for summary.reservoirR_fit object
 }
