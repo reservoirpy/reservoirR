@@ -78,13 +78,19 @@ Please do not modify the global environment (e.g. by using <<-) in your
 functions. This is not allowed by the CRAN policies.
 e.g.: R/zzz.R
 
-=> TODO https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
-
-It is the same strategy used by the package autokeras for instance (see: https://github.com/r-tensorflow/autokeras/blob/master/R/package.R)
+=> Thank you for your comment. The strategy used here is recommended by the
+reticulate package vignette (https://cran.r-project.org/web/packages/reticulate/vignettes/package.html)
+and used both in tensorflow (https://github.com/rstudio/tensorflow/blob/main/R/package.R)
+and autokeras (https://github.com/r-tensorflow/autokeras/blob/master/R/package.R)
+package. An alternative could be to load python module in each function but I
+believe it will be less convenient.
 
 Please do not install packages in your functions, examples or vignette.
 This can make the functions,examples and cran-check very slow. e.g.:
 R/install.R
 
-=> TODO It is the same strategy used by tensorflow package (https://github.com/rstudio/tensorflow/blob/main/R/install.R)
-
+=> Thank you for your comment. The install function aims to install a python module.
+This is the procedure recommended in the reticulate package vignette (https://cran.r-project.org/web/packages/reticulate/vignettes/package.html). Also
+this is used in the tensorflow package (https://github.com/rstudio/tensorflow/blob/main/R/install.R).
+An alternative would be to add this function into the readme of the package but
+I believe this wrapper function would be easier to use.
