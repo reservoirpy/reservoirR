@@ -34,6 +34,8 @@ We believe the note is ok. The words are well spelled. The command 'tidy' note d
 
 # CRAN review (14/03/2023)
 
+## Response to comments
+
 Please always write package names, software names and API (application
 programming interface) names in single quotes in title and description.
 e.g: --> 'python' , 'reservoirPy'
@@ -93,4 +95,37 @@ R/install.R
 This is the procedure recommended in the reticulate package vignette (https://cran.r-project.org/web/packages/reticulate/vignettes/package.html). Also
 this is used in the tensorflow package (https://github.com/rstudio/tensorflow/blob/main/R/install.R).
 An alternative would be to add this function into the readme of the package but
-I believe this wrapper function would be easier to use.
+I believe this wrapper function would be easier to use. Also, the installation
+is not automatic and the user is free to choose to install reservoirpy python module.
+
+## Test environnement
+
+Environment :
+
+- local windows R v4.2.2
+- github action : ubuntu v22.04
+- github action : windows server 2022 v10.0
+- github action : macos v12.6.3
+- check_rhub : Windows Server 2022, R-devel, 64 bit
+- check_win_devel : Windows Server 2022 x64 (build 20348)
+
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Thomas Ferte <thomas.ferte@u-bordeaux.fr>'
+
+New submission
+
+Possibly misspelled words in DESCRIPTION:
+  ESN (16:15)
+  IdEx (23:75)
+  PHDS (24:44)
+  RRI (24:40)
+  reservoirPy (13:72)
+
+* checking HTML version of manual ... NOTE
+Skipping checking HTML validation: no command 'tidy' found
+
+* checking for detritus in the temp directory ... NOTE
+  Found the following files/directories:
+    'lastMiKTeXException'
+
+We believe the note is ok. The words are well spelled. The command 'tidy' note does not seem to be a problem (https://stackoverflow.com/questions/74857062/rhub-cran-check-keeps-giving-html-note-on-fedora-test-no-command-tidy-found). The detritus temp directory does not seem to be a problem (https://stackoverflow.com/questions/62456137/r-cran-check-detritus-in-temp-directory). 
