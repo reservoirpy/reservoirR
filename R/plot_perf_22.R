@@ -10,6 +10,22 @@
 #'
 #' @return A 2x2 plot
 #' @export
+#' 
+#' @examples 
+#' dfPerf <-
+#' data.frame(
+#'   perf = runif(n = 10),
+#'   ridge = runif(n = 10),
+#'   input_scaling = runif(n = 10),
+#'   leaking_rate = runif(n = 10)
+#' )
+#' reservoirnet::plot_perf_22(
+#'   dfPerf = dfPerf,
+#'   x = "ridge",
+#'   y = "input_scaling",
+#'   perf_lab = "MSE"
+#' )
+#' 
 plot_perf_22 <- function(x, y, dfPerf, perf_lab, trans = "log10"){
   dfPerf %>%
     ggplot(mapping = aes_string(x = x, y = y, color = "perf")) +

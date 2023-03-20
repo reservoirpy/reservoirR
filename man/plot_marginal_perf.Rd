@@ -19,3 +19,14 @@ A plot with 4 facets
 \description{
 get marginal performance from dfPerf
 }
+\examples{
+dfPerf <-
+data.frame(
+  perf = runif(n = 10),
+  ridge = runif(n = 10),
+  input_scaling = runif(n = 10),
+  leaking_rate = runif(n = 10)
+)
+reservoirnet::plot_marginal_perf(dfPerf = dfPerf, color_cut = 2)
+
+}

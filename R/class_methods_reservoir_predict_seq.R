@@ -5,6 +5,22 @@
 #'
 #' @return A dataframe with node activation
 #' @export
+#' 
+#'
+#'@examples
+#' if(reticulate::py_module_available("reservoirpy")){
+#' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+#'                                       seed = 1,
+#'                                       units = 500,
+#'                                       lr = 0.7,
+#'                                       sr = 1,
+#'                                       input_scaling = 1)
+#' X <- matrix(data = rnorm(100), ncol = 4)
+#' reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
+#' plot(reservoir_state_stand)
+#' summary(reservoir_state_stand)
+#' }
+#'
 summary.reservoir_predict_seq <- function(object, ...){
   object %>%
     unclass() %>%
@@ -27,6 +43,22 @@ summary.reservoir_predict_seq <- function(object, ...){
 #' @return A ggplot
 #' @importFrom rlang .data
 #' @export
+#' 
+#'
+#'@examples
+#' if(reticulate::py_module_available("reservoirpy")){
+#' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+#'                                       seed = 1,
+#'                                       units = 500,
+#'                                       lr = 0.7,
+#'                                       sr = 1,
+#'                                       input_scaling = 1)
+#' X <- matrix(data = rnorm(100), ncol = 4)
+#' reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
+#' plot(reservoir_state_stand)
+#' summary(reservoir_state_stand)
+#' }
+#'
 plot.reservoir_predict_seq <- function(x,
                                        ...,
                                        vec_nodes = c(1:20),

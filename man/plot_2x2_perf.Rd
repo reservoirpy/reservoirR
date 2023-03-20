@@ -26,3 +26,15 @@ A mutliple 2x2 plots.
 \description{
 Plot 2x2 combinations of the hyperparameters.
 }
+\examples{
+dfPerf <-
+data.frame(
+  perf = runif(n = 10),
+  ridge = runif(n = 10),
+  input_scaling = runif(n = 10),
+  leaking_rate = runif(n = 10)
+)
+reservoirnet::plot_2x2_perf(dfPerf = dfPerf)
+
+
+}

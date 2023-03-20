@@ -10,7 +10,7 @@ Authors@R: c(person("Thomas", "Ferte", role = c("aut", "cre", "trl"), email = "t
              person("Xavier", "Hinaut", role = c("aut"), email = "xavier.hinaut@inria.fr"),
              person("Boris", "Hejblum", role = c("aut", "trl"), email = "boris.hejblum@u-bordeaux.fr"))
 SystemRequirements: Python (>= 3.7)
-Description: A simple user-friendly library based on the python module reservoirPy.
+Description: A simple user-friendly library based on the 'python' module 'reservoirpy'.
              It provides a flexible interface to implement efficient Reservoir
              Computing (RC) architectures with a particular focus on Echo State Networks
              (ESN). Some of its features are: offline and online training, parallel implementation, 
@@ -19,9 +19,10 @@ Description: A simple user-friendly library based on the python module reservoir
              complex architectures with multiple reservoirs (e.g. deep reservoirs), readouts, 
              and complex feedback loops. Moreover, graphical tools are included to easily 
              explore hyperparameters. Finally, it includes several tutorials exploring
-             time series forecasting, classification and hyperparameter tuning. This package was
-             developed in the framework of the University of Bordeaux’s IdEx "Investments
-             for the Future" program / RRI PHDS.
+             time series forecasting, classification and hyperparameter tuning. For more information
+             about 'reservoirpy', please see Trouvain et al. (2020) <doi:10.1007/978-3-030-61616-8_40>.
+             This package was developed in the framework of the University of Bordeaux’s IdEx
+             "Investments for the Future" program / RRI PHDS.
 Config/reticulate:
   list(
     packages = list(

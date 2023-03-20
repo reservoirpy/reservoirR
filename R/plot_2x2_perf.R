@@ -13,6 +13,18 @@
 #' @importFrom ggpubr ggarrange
 #' @importFrom janitor remove_constant
 #' @importFrom utils combn
+#' 
+#' @examples 
+#' dfPerf <-
+#' data.frame(
+#'   perf = runif(n = 10),
+#'   ridge = runif(n = 10),
+#'   input_scaling = runif(n = 10),
+#'   leaking_rate = runif(n = 10)
+#' )
+#' reservoirnet::plot_2x2_perf(dfPerf = dfPerf)
+#' 
+#' 
 plot_2x2_perf <- function(dfPerf,
                           perf_lab = "Median relative error",
                           legend_position = "bottom",
@@ -36,3 +48,5 @@ plot_2x2_perf <- function(dfPerf,
                     common.legend = TRUE,
                     legend = legend_position)
 }
+
+

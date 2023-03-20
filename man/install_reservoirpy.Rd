@@ -12,6 +12,15 @@ install_reservoirpy(envname = "r-reticulate", method = "auto")
 \item{method}{\code{str} type of environment type \code{(virtualenv, conda)}. 
 Default is auto \code{(virtualenv is not available on Windows)}}
 }
+\value{
+A NULL object after installing reservoirpy python module.
+}
 \description{
 Install reservoirpy
+}
+\examples{
+\dontrun{
+reservoirnet::install_reservoirpy()
+}
+
 }

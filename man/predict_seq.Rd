@@ -21,9 +21,31 @@ If True, Node state will be updated by this operation.}
 \item{reset}{\code{bool}, default to \code{FALSE}
 If True, Node state will be reset to zero before this operation.}
 }
+\value{
+An object of class reservoir_predict_seq. This object is a numeric
+vector containing the matrix of the prediction of the reservoir. It is either
+the forecast of the ridge layer or the node state of the reservoir if no
+ridge layer is given.
+}
 \description{
 Run the node-forward function on a sequence of data
 }
 \details{
 Can update the state of the node several times
+}
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+                                      seed = 1,
+                                      units = 500,
+                                      lr = 0.7,
+                                      sr = 1,
+                                      input_scaling = 1)
+X <- matrix(data = rnorm(100), ncol = 4)
+reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
+plot(reservoir_state_stand)
+summary(reservoir_state_stand)
+}
+
+
 }

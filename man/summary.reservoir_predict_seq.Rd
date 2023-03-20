@@ -17,3 +17,18 @@ A dataframe with node activation
 \description{
 summary.reservoir_predict_seq
 }
+\examples{
+if(reticulate::py_module_available("reservoirpy")){
+reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
+                                      seed = 1,
+                                      units = 500,
+                                      lr = 0.7,
+                                      sr = 1,
+                                      input_scaling = 1)
+X <- matrix(data = rnorm(100), ncol = 4)
+reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
+plot(reservoir_state_stand)
+summary(reservoir_state_stand)
+}
+
+}
