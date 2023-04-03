@@ -80,12 +80,7 @@ Please do not modify the global environment (e.g. by using <<-) in your
 functions. This is not allowed by the CRAN policies.
 e.g.: R/zzz.R
 
-=> Thank you for your comment. The strategy used here is recommended by the
-reticulate package vignette (https://cran.r-project.org/web/packages/reticulate/vignettes/package.html)
-and used both in tensorflow (https://github.com/rstudio/tensorflow/blob/main/R/package.R)
-and autokeras (https://github.com/r-tensorflow/autokeras/blob/master/R/package.R)
-package. An alternative could be to load python module in each function but I
-believe it will be less convenient.
+=> Thank you for your comment. We removed the function used for attaching python module, they are now loaded in each function when needed.
 
 Please do not install packages in your functions, examples or vignette.
 This can make the functions,examples and cran-check very slow. e.g.:
