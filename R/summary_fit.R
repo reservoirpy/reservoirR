@@ -14,7 +14,7 @@
 #' if(reticulate::py_module_available("reservoirpy")){
 # reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #                                       seed = 1,
-#                                       units = 500,
+#                                       units = 100,
 #                                       lr = 0.7,
 #                                       sr = 1,
 #                                       input_scaling = 1)
@@ -59,7 +59,7 @@ summary.reservoirR_fit <- function(object, ...){
 #' if(reticulate::py_module_available("reservoirpy")){
 # reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #                                       seed = 1,
-#                                       units = 500,
+#                                       units = 100,
 #                                       lr = 0.7,
 #                                       sr = 1,
 #                                       input_scaling = 1)

@@ -21,7 +21,7 @@ A port of the \code{>>} "chevron" operator from reservoirpy.
 \examples{
 if(interactive()){
   source <- reservoirnet::createNode("Input")
-  reservoir <- reservoirnet::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+  reservoir <- reservoirnet::createNode("Reservoir", units = 100, lr=0.1, sr=0.9)
   source \%>>\% reservoir
 
   readout <- reservoirnet::createNode("Ridge")

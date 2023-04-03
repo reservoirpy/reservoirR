@@ -168,7 +168,7 @@ createNode <- function(nodeType = c("Ridge"),
 #' if(reticulate::py_module_available("reservoirpy")){
 #' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #'                                       seed = 1,
-#'                                       units = 500,
+#'                                       units = 100,
 #'                                       lr = 0.7,
 #'                                       sr = 1,
 #'                                       input_scaling = 1)
@@ -219,7 +219,7 @@ link <- function(node1, node2, name = NULL){
 #' if(reticulate::py_module_available("reservoirpy")){
 #' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #'                                       seed = 1,
-#'                                       units = 500,
+#'                                       units = 100,
 #'                                       lr = 0.7,
 #'                                       sr = 1,
 #'                                       input_scaling = 1)
@@ -286,7 +286,7 @@ predict_seq <- function(node,X,
 #' if(reticulate::py_module_available("reservoirpy")){
 # reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #                                       seed = 1,
-#                                       units = 500,
+#                                       units = 100,
 #                                       lr = 0.7,
 #                                       sr = 1,
 #                                       input_scaling = 1)
@@ -414,7 +414,7 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
 #' @examples
 #' if(interactive()){
 #'   source <- reservoirnet::createNode("Input")
-#'   reservoir <- reservoirnet::createNode("Reservoir", units = 500, lr=0.1, sr=0.9)
+#'   reservoir <- reservoirnet::createNode("Reservoir", units = 100, lr=0.1, sr=0.9)
 #'   source %>>% reservoir
 #' 
 #'   readout <- reservoirnet::createNode("Ridge")
