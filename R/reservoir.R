@@ -63,7 +63,9 @@ createNode <- function(nodeType = c("Ridge"),
                        dtype = "float64",
                        seed = NULL,
                        ...) {
-  
+  ## import reservoirpy
+  reservoirpy <- reticulate::import("reservoirpy", convert = FALSE,
+                                    delay_load = list(on_error = err_reservoirpy))
   stopifnot(!is.null(nodeType))
   
   if(nodeType == "Ridge"){
@@ -121,8 +123,8 @@ createNode <- function(nodeType = c("Ridge"),
                                             activation = activation,
                                             seed = as.integer(seed))
       }
-      
-      
+    
+    
   }
   else if(nodeType=="Input"){
     node <- reservoirpy$nodes$Input(input_dim = inputDim,
@@ -173,6 +175,9 @@ createNode <- function(nodeType = c("Ridge"),
 #' }
 #'
 link <- function(node1, node2, name = NULL){
+  # import reservoirpy
+  reservoirpy <- reticulate::import("reservoirpy", convert = FALSE,
+                                    delay_load = list(on_error = err_reservoirpy))
   
   stopifnot(!is.null(node1) & !is.null(node2))
   
@@ -362,6 +367,9 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
                           n_timesteps, 
                           tau=17, a = 0.2, b = 0.1, 
                           n = 10, x0 = 1.2, h = 1.0){
+  ## import reservoirpy
+  reservoirpy <- reticulate::import("reservoirpy", convert = FALSE,
+                                    delay_load = list(on_error = err_reservoirpy))
   
   if(length(dataset)>1) {
     dataset <- dataset[1]
