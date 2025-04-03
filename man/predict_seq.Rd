@@ -4,7 +4,14 @@
 \alias{predict_seq}
 \title{Run the node-forward function on a sequence of data}
 \usage{
-predict_seq(node, X, formState = NULL, stateful = TRUE, reset = FALSE)
+predict_seq(
+  node,
+  X,
+  formState = NULL,
+  stateful = TRUE,
+  reset = FALSE,
+  seq_to_vec = FALSE
+)
 }
 \arguments{
 \item{node}{node}
@@ -20,6 +27,12 @@ If True, Node state will be updated by this operation.}
 
 \item{reset}{\code{bool}, default to \code{FALSE}
 If True, Node state will be reset to zero before this operation.}
+
+\item{seq_to_vec}{\code{bool}, defaults to \code{FALSE}.
+If \code{TRUE}, processes each sequence independently and returns a list of
+outputs for each input sequence in \code{X}, useful for sequence-to-vector
+classification.
+If \code{FALSE}, processes \code{X} as a whole and returns a single output.}
 }
 \value{
 An object of class reservoir_predict_seq. This object is a numeric
