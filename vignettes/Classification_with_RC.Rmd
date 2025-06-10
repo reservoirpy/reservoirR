@@ -22,9 +22,7 @@ The Japanese vowel dataset is composed of 640 utterances of the Japanese vowel \
 
 Each spoken utterance is a timeseries of 7\~29 timesteps. Each timestep of signal is a 12 dimensional vector representing Linear Prediction Coefficient (LPC), which encode the audio signal into the cepstral domain (a variant of the frequency domain).
 
-References M. Kudo, J. Toyama and M. Shimbo. (1999). "Multidimensional Curve Classification Using Passing-Through Regions". Pattern Recognition Letters, Vol. 20, No. 11--13, pages 1103--1111.
-
-<https://archive.ics.uci.edu/ml/machine-learning-databases/JapaneseVowels-mld/>
+References Mineichi Kudo, Jun Toyama, and Masaru Shimbo. 1999. Multidimensional curve classification using passing—through regions. Pattern Recogn. Lett. 20, 11–13 (Nov. 1999), 1103–1111. <https://doi.org/10.1016/S0167-8655(99)00077-X>
 
 
 ```r
