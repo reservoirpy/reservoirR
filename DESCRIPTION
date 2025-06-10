@@ -31,7 +31,7 @@ Config/reticulate:
   )
 License: GPL (>= 3)
 Repository: CRAN
-URL: https://github.com/reservoirpy
+URL: https://github.com/reservoirpy/reservoirR
 Depends: R (>= 3.6)
 RoxygenNote: 7.3.2
 Encoding: UTF-8
@@ -56,3 +56,4 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Language: en-US
+BugReports: https://github.com/reservoirpy/reservoirR/issues
