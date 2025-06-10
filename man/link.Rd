@@ -30,6 +30,7 @@ created model. This is similar to a function composition operation:
 Can update the state of the node several times
 }
 \examples{
+\dontrun{
 if(reticulate::py_module_available("reservoirpy")){
 reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
                                       seed = 1,
@@ -39,6 +40,7 @@ reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
                                       input_scaling = 1)
 readout <- reservoirnet::createNode(nodeType = "Ridge", ridge = 0.1)
 model <- reservoirnet::link(reservoir, readout)
+}
 }
 
 }

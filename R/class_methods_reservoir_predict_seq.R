@@ -46,6 +46,7 @@ summary.reservoir_predict_seq <- function(object, ...){
 #' 
 #'
 #'@examples
+#' \dontrun{
 #' if(reticulate::py_module_available("reservoirpy")){
 #' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #'                                       seed = 1,
@@ -57,6 +58,7 @@ summary.reservoir_predict_seq <- function(object, ...){
 #' reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
 #' plot(reservoir_state_stand)
 #' summary(reservoir_state_stand)
+#' }
 #' }
 #'
 plot.reservoir_predict_seq <- function(x,

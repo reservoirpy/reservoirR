@@ -165,6 +165,7 @@ createNode <- function(nodeType = c("Ridge"),
 #'@export
 #'
 #'@examples
+#' \dontrun{
 #' if(reticulate::py_module_available("reservoirpy")){
 #' reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 #'                                       seed = 1,
@@ -174,6 +175,7 @@ createNode <- function(nodeType = c("Ridge"),
 #'                                       input_scaling = 1)
 #' readout <- reservoirnet::createNode(nodeType = "Ridge", ridge = 0.1)
 #' model <- reservoirnet::link(reservoir, readout)
+#' }
 #' }
 #'
 link <- function(node1, node2, name = NULL){

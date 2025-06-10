@@ -22,6 +22,7 @@ A ggplot
 plot.reservoir_predict_seq
 }
 \examples{
+\dontrun{
 if(reticulate::py_module_available("reservoirpy")){
 reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
                                       seed = 1,
@@ -33,6 +34,7 @@ X <- matrix(data = rnorm(100), ncol = 4)
 reservoir_state_stand <- reservoirnet::predict_seq(node = reservoir, X = X)
 plot(reservoir_state_stand)
 summary(reservoir_state_stand)
+}
 }
 
 }
