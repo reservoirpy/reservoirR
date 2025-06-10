@@ -1,8 +1,8 @@
 Package: reservoirnet
 Type: Package
 Title: Reservoir Computing and Echo State Networks
-Version: 0.2.0
-Date: 2023-03-13
+Version: 0.3.0
+Date: 2025-06-10
 Authors@R: c(person("Thomas", "Ferte", role = c("aut", "cre", "trl"), email = "thomas.ferte@u-bordeaux.fr"),
              person("Kalidou", "Ba", role = c("aut", "trl"), email = "kalidou.ba@u-bordeaux.fr"),
              person("Nathan", "Trouvain", role = c("aut"), email = "nathan.trouvin@inria.fr"),
