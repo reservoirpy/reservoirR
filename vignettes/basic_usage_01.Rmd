@@ -10,7 +10,8 @@ vignette: >
 
 
 
-```r
+
+```{r}
 library(reservoirnet)
 library(ggplot2)
 library(dplyr)
@@ -23,7 +24,7 @@ Here you will learn basic use of reservoirnet package. This will be illustrated 
 We can load the data and set the given task :
 
 
-```r
+```{r}
 data("dfCovid")
 
 dist_forecast = 14
@@ -36,7 +37,7 @@ traintest_date = as.Date("2022-01-01")
 Because both RT-PCR have strong variations, we will first proceed by taking the moving average on the last 7 days of those features. Also we add an outcome and an outcomeDate colum which will be useful to train the model.
 
 
-```r
+```{r}
 dfOutcome <- dfCovid %>%
   # outcome at 14 days
   mutate(outcome = lead(x = hosp, n = dist_forecast),
@@ -51,7 +52,7 @@ dfOutcome <- dfCovid %>%
 Now that we have our data ready, we can plot those :
 
 
-```r
+```{r}
 dfOutcome %>%
   tidyr::pivot_longer(cols = c("hosp", "Positive", "Tested")) %>%
   ggplot2::ggplot(mapping = aes(x = date, y = value)) +
@@ -77,9 +78,9 @@ Setting a reservoir is easily done with the `createNode()` function. The importa
 - Input scaling (input_scaling): the input scaling is a gain applied to the input features of the reservoir.
 
 
-```r
+```{r}
 reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
-                                      seed = stand_seed,
+                                      seed = 1,
                                       units = 500,
                                       lr = 0.7,
                                       sr = 1,
@@ -89,7 +90,7 @@ reservoir <- reservoirnet::createNode(nodeType = "Reservoir",
 Then we can feed the data to the reservoir and see the activation depending on time of the reservoir. To do so, we first prepare the data and transform it to an array.
 
 
-```r
+```{r}
 ## select explanatory and transform it to an array
 X <- dfOutcome %>%
   filter(outcomeDate < traintest_date) %>%
@@ -98,17 +99,17 @@ X <- dfOutcome %>%
   as.array()
 ```
 
-Then we run the `predict_seq` function. The parameter reset is set to TRUE to be sure that the node is clear from data (it is optional here).
+Then we run the `predict_seq` function.
 
 
-```r
-reservoir_state <- predict_seq(node = reservoir, X = X, reset = TRUE)
+```{r}
+reservoir_state <- predict_seq(node = reservoir, X = X)
 ```
 
 Now we might want to visualise it so we can make a plot of this :
 
 
-```r
+```{r}
 plot(reservoir_state)
 ```
 
@@ -117,14 +118,14 @@ plot(reservoir_state)
 We see a lot of nodes with a steady state after time 100 and do not move after that. It will be really difficult for the ridge output layer to learn on this node because they present nearly no information. The problem is caused by the different scales of the features, to take this into account, we can divide by the maximum value :
 
 
-```r
+```{r}
 stand_max <- function(x) return(x/max(x))
 ```
 
 We prepare the scaled data, feed them to the reservoir and plot the node activation.
 
 
-```r
+```{r}
 # scaled features
 Xstand <- dfOutcome %>%
   filter(date < traintest_date) %>%
@@ -151,14 +152,14 @@ In order to train the reservoir, we should train the last layer which linearly c
 First we define this last layer with a ridge penalty of 0.1.
 
 
-```r
+```{r}
 readout <- reservoirnet::createNode(nodeType = "Ridge", ridge = 0.1)
 ```
 
 And we connect it to the previously defined reservoir :
 
 
-```r
+```{r}
 model <- reservoirnet::link(reservoir, readout)
 ```
 
@@ -169,7 +170,7 @@ The model is now ready we must now train the last layer weights.
 First we separate the train set on which we will learn the ridge coefficients and the test set on which we will make the forecast :
 
 
-```r
+```{r}
 # train set
 yTrain <- dfOutcome %>% filter(outcomeDate <= traintest_date) %>% select(outcome)
 xTrain <- dfOutcome %>% filter(outcomeDate <= traintest_date) %>% select(hosp, Positive, Tested)
@@ -180,7 +181,7 @@ xTest <- dfOutcome %>% select(hosp, Positive, Tested)
 We now standardise with the same formula as seen before. We learn the standardisation on the training set :
 
 
-```r
+```{r}
 # standardise based on training set values
 ls_fct_stand <- apply(xTrain,
                       MARGIN = 2,
@@ -190,7 +191,7 @@ ls_fct_stand <- apply(xTrain,
 And we apply it to both the train and test sets :
 
 
-```r
+```{r}
 xTrainstand <- xTrain
 xTeststand <- xTest
 lapply(X = names(ls_fct_stand),
@@ -204,7 +205,7 @@ lapply(X = names(ls_fct_stand),
 Finally we convert all those data to array :
 
 
-```r
+```{r}
 # convert to array
 lsdf <- lapply(list(yTrain = yTrain,
                     xTrain = xTrainstand,
@@ -219,7 +220,7 @@ Et voilà !
 Now, the easy part. We are going to train the reservoir with the train set. To do so, we set a warmup of 30 days during which the data are propagating into the reservoir but not used to fit the ridge layer.
 
 
-```r
+```{r}
 ### train the reservoir ridge output
 fit <- reservoirnet::reservoirR_fit(node = model, X = lsdf$xTrain, Y = lsdf$yTrain, warmup = 30, reset = TRUE)
 ```
@@ -227,13 +228,13 @@ fit <- reservoirnet::reservoirR_fit(node = model, X = lsdf$xTrain, Y = lsdf$yTra
 Now that the ridge layer is trained, we can perform predictions as seen before. We set the parameter `reset` to TRUE in order to clean the reservoir from the data used by the training set.
 
 
-```r
+```{r}
 ### predict with the reservoir
 vec_pred <- reservoirnet::predict_seq(node = fit$fit, X = lsdf$xTest, reset = TRUE)
 ```
 
 
-```r
+```{r}
 dfOutcome %>%
   mutate(pred = vec_pred) %>%
   ggplot(mapping = aes(x = outcomeDate)) +
