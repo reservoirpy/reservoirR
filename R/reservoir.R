@@ -74,7 +74,7 @@ createNode <- function(nodeType = c("Ridge"),
     node <- reservoirpy$nodes$Ridge(output_dim = otputDim, 
                                     name = name,
                                     ridge = ridge,
-                                    input_bias = inputBias)
+                                    fit_bias = inputBias)
   }
   else if(nodeType=="Reservoir"){
     if(!is.null(units))
@@ -85,7 +85,6 @@ createNode <- function(nodeType = c("Ridge"),
                                             lr = lr,
                                             sr = sr,
                                             name = name,
-                                            input_bias = inputBias,
                                             input_scaling = input_scaling,
                                             rc_connectivity = rc_connectivity,
                                             input_connectivity = input_connectivity,
@@ -95,7 +94,6 @@ createNode <- function(nodeType = c("Ridge"),
                                             lr = lr,
                                             sr = sr,
                                             name = name,
-                                            input_bias = inputBias,
                                             input_scaling = input_scaling,
                                             rc_connectivity = rc_connectivity,
                                             input_connectivity = input_connectivity,
@@ -108,7 +106,6 @@ createNode <- function(nodeType = c("Ridge"),
                                             lr = lr,
                                             sr = sr,
                                             name = name,
-                                            input_bias = inputBias,
                                             input_scaling = input_scaling,
                                             rc_connectivity = rc_connectivity,
                                             input_connectivity = input_connectivity,
@@ -118,7 +115,6 @@ createNode <- function(nodeType = c("Ridge"),
                                             lr = lr,
                                             sr = sr,
                                             name = name,
-                                            input_bias = inputBias,
                                             input_scaling = input_scaling,
                                             rc_connectivity = rc_connectivity,
                                             input_connectivity = input_connectivity,
@@ -155,9 +151,6 @@ createNode <- function(nodeType = c("Ridge"),
 #'@param node2 (Node) or (list_of_Node)
 #'Nodes or lists of nodes to link.
 #'
-#'@param name (str) optional
-#'Name for the chaining Model.
-#'
 #'@importFrom reticulate py_to_r
 #' 
 #' @return A reservoir model linking node1 and node2.
@@ -178,14 +171,14 @@ createNode <- function(nodeType = c("Ridge"),
 #' }
 #' }
 #'
-link <- function(node1, node2, name = NULL){
+link <- function(node1, node2){
   # import reservoirpy
   reservoirpy <- reticulate::import("reservoirpy", convert = FALSE,
                                     delay_load = list(on_error = err_reservoirpy))
   
   stopifnot(!is.null(node1) & !is.null(node2))
   
-  link <- reservoirpy$link(node1, node2, name)
+  link <- reservoirpy$ops$link(node1, node2)
   return(py_to_r(link))
 }
 
@@ -199,12 +192,6 @@ link <- function(node1, node2, name = NULL){
 #'
 #'@param X array-like of shape \code{([n_inputs], timesteps, input_dim)}
 #'A sequence of data of shape (timesteps, features).
-#'
-#'@param formState array of shape \code{(1, output_dim)}, optional 
-#'Node state value to use at begining of computation.
-#'
-#'@param stateful \code{bool}, default to \code{TRUE} 
-#'If True, Node state will be updated by this operation.
 #'
 #'@param reset \code{bool}, default to \code{FALSE}
 #'If True, Node state will be reset to zero before this operation.
@@ -239,30 +226,29 @@ link <- function(node1, node2, name = NULL){
 #'
 #'
 predict_seq <- function(node,X,
-                        formState = NULL,
-                        stateful = TRUE,
                         reset = FALSE,
                         seq_to_vec = FALSE){
   
   stopifnot(!is.null(node))
   stopifnot(is.list(X)| is.array(X))
-  stopifnot(is.logical(stateful) & is.logical(reset) & is.logical(seq_to_vec))
+  stopifnot(is.logical(reset))
+  
+  if(reset){
+    node$reset()
+  }
+  
   
   if(seq_to_vec){
     res <- lapply(X,
                   function(seq_i){
-                    pred <- node$run(seq_i, from_state = formState, 
-                                     stateful = stateful, 
-                                     reset=reset)
+                    pred <- node$run(seq_i)
                     
                     res <- reticulate::py_to_r(pred)
                     
                     return(res)
                   })
   } else {
-    pred <- node$run(X, from_state = formState, 
-                     stateful = stateful, 
-                     reset=reset)
+    pred <- node$run(X)
     
     res <- reticulate::py_to_r(pred)
   }
@@ -292,9 +278,6 @@ predict_seq <- function(node,X,
 #'Number of timesteps to consider as warmup and 
 #'discard at the begining of each timeseries before training.
 #'
-#'@param stateful is boolen
-#'
-#'
 #' @param reset is boolean. Should the node status be reset before fitting.
 #'
 #'@importFrom reticulate py_to_r
@@ -323,20 +306,22 @@ predict_seq <- function(node,X,
 # print(fitted_model)
 #' }
 #'
-reservoirR_fit <- function(node, X, Y, warmup = 0, stateful=FALSE, reset = FALSE){
+reservoirR_fit <- function(node, X, Y, warmup = 0, reset = FALSE){
   
   stopifnot(!is.null(node) & !is.null(X) & !is.null(Y))
+  
+  if(reset & node$initialized){
+    node$reset()
+  }
   
   if (class(node)[1]=="reservoirpy.model.Model")
     fit <- node$fit(X,
                     Y,
-                    warmup = as.integer(warmup),
-                    stateful = stateful,
-                    reset = reset)
+                    warmup = as.integer(warmup))
   else
     fit <- node$fit(X, Y, warmup = as.integer(warmup))
   res_fit <- list(fit = py_to_r(fit),
-                  params = list("warmup" = warmup, "stateful" = stateful, "reset" = reset)) 
+                  params = list("warmup" = warmup, "reset" = reset)) 
   class(res_fit) <- "reservoirR_fit"
   return(res_fit)
 }
