@@ -36,10 +36,9 @@ test_that("reservoirnet", {
   model_fit <- reservoirnet::reservoirR_fit(node = model,
                               X = japanese_vowels$X_train, 
                               Y = japanese_vowels$Y_train, 
-                              stateful=FALSE,
                               warmup = 2)
   
-  Y_pred <- reservoirnet::predict_seq(node = model_fit$fit, X = japanese_vowels$X_test,stateful = FALSE)
+  Y_pred <- reservoirnet::predict_seq(node = model_fit$fit, X = japanese_vowels$X_test)
   # formal test
   testthat::expect(class(model)[1] == "reservoirpy.model.Model",
                    failure_message = "Output of fit function is not a reservoirpy.model.Model object")

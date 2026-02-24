@@ -6,7 +6,7 @@
 instance. \code{node1} output will be used as input for \code{node2} in the
 created model. This is similar to a function composition operation:}
 \usage{
-link(node1, node2, name = NULL)
+link(node1, node2)
 }
 \arguments{
 \item{node1}{(Node) or (list_of_Node)
@@ -14,9 +14,6 @@ Nodes or lists of nodes to link.}
 
 \item{node2}{(Node) or (list_of_Node)
 Nodes or lists of nodes to link.}
-
-\item{name}{(str) optional
-Name for the chaining Model.}
 }
 \value{
 A reservoir model linking node1 and node2.

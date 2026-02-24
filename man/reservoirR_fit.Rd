@@ -4,7 +4,7 @@
 \alias{reservoirR_fit}
 \title{Offline fitting method of a Node}
 \usage{
-reservoirR_fit(node, X, Y, warmup = 0, stateful = FALSE, reset = FALSE)
+reservoirR_fit(node, X, Y, warmup = 0, reset = FALSE)
 }
 \arguments{
 \item{node}{node}
@@ -23,8 +23,6 @@ an unsupervised way, if possible.}
 \item{warmup}{: \code{int}, default to 0 
 Number of timesteps to consider as warmup and 
 discard at the begining of each timeseries before training.}
-
-\item{stateful}{is boolen}
 
 \item{reset}{is boolean. Should the node status be reset before fitting.}
 }

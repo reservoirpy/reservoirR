@@ -125,11 +125,10 @@ createNode <- function(nodeType = c("Ridge"),
     
   }
   else if(nodeType=="Input"){
-    node <- reservoirpy$nodes$Input(input_dim = inputDim,
-                                    name = name,...)
+    node <- reservoirpy$nodes$Input(name = name)
   }
   else if(nodeType=="Output"){
-    node <- reservoirpy$nodes$Output(name = name,...)
+    node <- reservoirpy$nodes$Output(name = name)
   }
   else{
     NULL
@@ -389,7 +388,7 @@ generate_data <- function(dataset = c("japanese_vowels","mackey_glass","both"),
     data_generated[["japanese_vowels"]] <- py_to_r(reservoirpy$datasets$japanese_vowels(one_hot_encode=one_hot_encode, 
                                                                                         repeat_targets=repeat_targets,
                                                                                         reload=reload))
-    names(data_generated[["japanese_vowels"]]) <- c("X_train", "Y_train", "X_test", "Y_test")
+    names(data_generated[["japanese_vowels"]]) <- c("X_train", "X_test", "Y_train", "Y_test")
   }
   if(dataset %in% c("mackey_glass","both")){
     stopifnot(!is.null(n_timesteps))
